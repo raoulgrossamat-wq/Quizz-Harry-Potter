@@ -1,103 +1,105 @@
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LEGO Harry Potter - Morning Brief Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Cinzel (Magical/Classic) & Inter -->
+  <!-- Google Fonts: Cinzel (Magie) & Inter (Lisibilité) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Cinzel:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
 
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0f172a; /* Night Blue */
-      /* Magical starry/sparkle background overlay */
-      background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.15), transparent 70%),
-        radial-gradient(rgba(255, 255, 255, 0.05) 2px, transparent 2px);
-      background-size: 100% 100%, 30px 30px;
+      background-color: #0b0f19; /* Bleu nuit très sombre */
+      /* Fond magique avec un subtil dégradé */
+      background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 100%);
+      color: #f8fafc;
+      overflow-x: hidden;
     }
 
     .font-magic {
       font-family: 'Cinzel', serif;
-      letter-spacing: 0.05em;
+      letter-spacing: 1px;
     }
 
-    /* HP Gold */
-    .bg-hp-gold { background-color: #d4af37; }
-    .text-hp-gold { color: #fbbf24; }
-    .border-hp-gold { border-color: #d4af37; }
-
-    /* Gryffindor Red & Slytherin Green for Duel */
-    .bg-gryffindor { background-color: #7f0909; }
-    .text-gryffindor { color: #ef4444; }
-    .bg-slytherin { background-color: #0d6217; }
-    .text-slytherin { color: #22c55e; }
-
-    /* Glow effects */
-    .glow-gold {
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+    /* Style parchemin/grimoire pour les cartes */
+    .magic-panel {
+      background-color: #111827;
+      background-image: radial-gradient(circle at top left, rgba(30, 58, 138, 0.2), transparent 70%),
+                        radial-gradient(circle at bottom right, rgba(147, 51, 234, 0.1), transparent 70%);
+      border: 2px solid #d4af37; /* Or antique */
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 0 15px rgba(212,175,55,0.1);
     }
 
-    @keyframes pulseTimer {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .animate-danger-pulse {
-      animation: pulseTimer 0.6s infinite ease-in-out;
-    }
-    
-    /* Boutons de réponses */
-    .option-btn {
+    .hp-button {
       transition: all 0.2s ease;
     }
-    .option-btn:active {
-      transform: scale(0.98);
+    .hp-button:active {
+      transform: scale(0.97);
     }
+    .hp-button:hover:not(:disabled) {
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Maisons Poudlard */
+    .bg-gryffindor { background-color: #7f0909; border-color: #d4af37; color: #fbbf24; }
+    .bg-slytherin { background-color: #1a472a; border-color: #aaaaaa; color: #e2e8f0; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b49126; }
+
+    @keyframes floatMagic {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-float { animation: floatMagic 3s infinite ease-in-out; }
+
+    @keyframes pulseTimer {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+    }
+    .animate-danger { animation: pulseTimer 0.6s infinite ease-in-out; border-color: #ef4444 !important; color: #ef4444 !important; }
   </style>
 </head>
-<body class="min-h-screen text-slate-100 flex flex-col justify-between selection:bg-yellow-500 selection:text-slate-900">
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-600 selection:text-white">
 
   <!-- HEADER -->
-  <header class="w-full border-b border-yellow-500/20 bg-slate-900/90 backdrop-blur-md sticky top-0 z-50 px-4 py-3 shadow-lg shadow-yellow-900/10">
+  <header class="w-full bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-4 py-3 shadow-[0_4px_15px_rgba(0,0,0,0.6)] border-b border-amber-600/50">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="app.showScreen('welcome')">
-        <!-- LEGO Brick Icon (Gold) -->
-        <div class="w-10 h-10 bg-hp-gold rounded-lg flex items-center justify-center font-black text-slate-900 shadow-md border-2 border-yellow-300">
-          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-            <path d="M19 6V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H9V5a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-3zM7 5a1 1 0 0 1 2 0v1H7V5zm8 0a1 1 0 0 1 2 0v1h-2V5z"/>
-          </svg>
+      <div class="flex items-center gap-3 cursor-pointer group" onclick="app.showScreen('welcome')">
+        <!-- Icône Éclair -->
+        <div class="w-10 h-10 md:w-12 md:h-12 bg-slate-900 rounded-full border-2 border-amber-500 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.5)] group-hover:bg-amber-900/50 transition-colors">
+          <span class="text-2xl text-amber-400">⚡</span>
         </div>
         <div>
-          <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-widest text-yellow-500 block">LEGO Store Brief</span>
-          <h1 class="text-lg md:text-2xl font-magic font-black tracking-tight text-white flex items-center gap-2">
-            HARRY POTTER <span class="bg-yellow-500 text-slate-900 px-1.5 py-0.5 rounded-sm text-sm md:text-base leading-none font-sans">QUIZ</span>
+          <span class="text-[10px] sm:text-xs uppercase font-bold tracking-widest text-amber-500/80 block">LEGO Store Brief</span>
+          <h1 class="text-2xl md:text-3xl font-magic tracking-wider text-white flex items-center gap-2 mt-0.5">
+            HARRY POTTER <span class="bg-amber-600 text-white px-2 py-0.5 rounded text-sm md:text-lg shadow-sm hp-button font-inter font-bold">QUIZ</span>
           </h1>
         </div>
       </div>
 
       <!-- Header actions -->
       <div class="flex items-center gap-2">
-        <button onclick="app.showLeaderboard()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
-          🏆 <span class="hidden sm:inline">Coupe des 4 Maisons</span>
+        <button onclick="app.showLeaderboard()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 rounded-lg text-xs md:text-sm font-bold text-amber-400 hp-button flex items-center gap-1.5 border border-slate-700">
+          🏆 <span class="hidden sm:inline font-magic text-sm">Coupe des 4 Maisons</span>
         </button>
-        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-500 border border-slate-700 transition" title="Activer / Couper la magie (Sons)">
+        <button id="soundToggleBtn" onclick="app.toggleSound()" class="p-2.5 bg-slate-900 hover:bg-slate-800 rounded-lg text-amber-400 hp-button border border-slate-700" title="Activer / Couper le son">
           <svg id="soundIconOn" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
           </svg>
-          <svg id="soundIconOff" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="soundIconOff" class="w-5 h-5 hidden text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z m12.414-4.586L21 7.414M18 10.414l3 3"/>
           </svg>
         </button>
-        <button onclick="app.openCustomModal()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs md:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5 text-slate-200">
-          <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          <span class="hidden sm:inline">Ajouter des</span> Questions
+        <button onclick="app.openCustomModal()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 rounded-lg text-xs md:text-sm font-bold text-purple-400 hp-button flex items-center gap-1.5 border border-slate-700">
+          <span class="text-lg">📜</span> <span class="hidden sm:inline font-magic text-sm">Grimoire</span>
         </button>
       </div>
     </div>
@@ -109,191 +111,180 @@
     <!-- SCREEN 1: ACCUEIL & CHOIX DU MODE -->
     <section id="screen-welcome" class="w-full text-center space-y-8 py-6">
       <div class="space-y-3">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 text-xs uppercase tracking-wider font-bold">
-          ⚡ Préparez vos baguettes !
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900 border border-amber-600/50 rounded-full text-amber-400 text-xs uppercase tracking-wider font-bold shadow-sm">
+          🚂 VOIE 9 3/4
         </div>
-        <h2 class="text-4xl md:text-6xl font-black font-magic text-transparent bg-clip-text bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 drop-shadow-lg uppercase">
-          Le Brief de Poudlard
+        <h2 class="text-5xl md:text-7xl font-magic text-white drop-shadow-[0_4px_10px_rgba(212,175,55,0.3)] pb-2 animate-float">
+          LE TOURNOI DES <span class="text-amber-500">BRIQUES</span>
         </h2>
-        <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base">
-          Testez vos connaissances sur le Monde des Sorciers et les secrets des sets LEGO avant l'ouverture du magasin !
+        <p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base font-semibold">
+          Préparez le brief du matin avec une dose de magie ! Testez vos connaissances sur l'univers et les sets LEGO Harry Potter.
         </p>
       </div>
 
       <!-- Sélection du mode -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-left max-w-2xl mx-auto">
-        <!-- Mode Solo / Flash -->
-        <div onclick="app.openNameSetup('solo')" class="group relative bg-slate-800/80 hover:bg-slate-700/90 border border-slate-600 hover:border-yellow-400 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-yellow-500/20">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto">
+        <!-- Mode Solo -->
+        <div onclick="app.openNameSetup('solo')" class="group relative bg-slate-900 border-2 border-slate-700 hover:border-amber-500 p-6 rounded-2xl cursor-pointer transition shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-500 flex items-center justify-center font-bold text-xl border border-yellow-400/30">
-              🦉
+            <div class="w-12 h-12 bg-blue-900 text-blue-300 flex items-center justify-center font-bold text-2xl rounded-full border-2 border-blue-500">
+              🧙‍♂️
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-semibold">Examen B.U.S.E</span>
+            <span class="text-xs px-3 py-1 rounded-full bg-slate-950 text-amber-500 font-bold border border-amber-500/50">Sorciers Unis</span>
           </div>
-          <h3 class="text-xl font-bold font-magic text-white group-hover:text-yellow-400 transition mb-1 tracking-wide">Mode Collectif / Solo</h3>
-          <p class="text-sm text-slate-400">Idéal projeté sur grand écran : toute l'équipe répond ensemble ou un sorcier est tiré au sort.</p>
+          <h3 class="text-2xl font-magic tracking-wide text-white group-hover:text-amber-400 transition mb-2">Mode Coopératif</h3>
+          <p class="text-sm text-slate-400 font-medium">Répondez tous ensemble sur l'écran ou désignez un Préfet pour le matin.</p>
         </div>
 
         <!-- Mode Duel Équipes -->
-        <div onclick="app.openNameSetup('duel')" class="group relative bg-slate-800/80 hover:bg-slate-700/90 border border-slate-600 hover:border-green-500 p-6 rounded-2xl cursor-pointer transition duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-green-500/20">
+        <div onclick="app.openNameSetup('duel')" class="group relative bg-slate-900 border-2 border-slate-700 hover:border-red-500 p-6 rounded-2xl cursor-pointer transition shadow-lg hover:shadow-[0_0_20px_rgba(220,38,38,0.2)]">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-slate-700 text-white flex items-center justify-center font-bold text-xl border border-slate-500">
+            <div class="w-12 h-12 bg-red-900 text-amber-400 flex items-center justify-center font-bold text-2xl rounded-full border-2 border-red-500">
               ⚔️
             </div>
-            <span class="text-xs px-2.5 py-1 rounded-full bg-slate-700 text-slate-300 border border-slate-500 font-semibold">Club de Duel</span>
+            <span class="text-xs px-3 py-1 rounded-full bg-slate-950 text-red-400 font-bold border border-red-500/50">Coupe des 4 Maisons</span>
           </div>
-          <h3 class="text-xl font-bold font-magic text-white group-hover:text-green-400 transition mb-1 tracking-wide">Gryffondor vs Serpentard</h3>
-          <p class="text-sm text-slate-400">Le Club de Duel ! Chaque maison répond à tour de rôle pour remporter la Coupe du matin.</p>
+          <h3 class="text-2xl font-magic tracking-wide text-white group-hover:text-red-400 transition mb-2">Duel de Maisons</h3>
+          <p class="text-sm text-slate-400 font-medium">Gryffondor contre Serpentard : affrontez-vous au tour par tour !</p>
         </div>
       </div>
 
       <!-- Quick Settings -->
-      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 pt-4">
-        <label class="flex items-center gap-2 cursor-pointer bg-slate-800/90 px-4 py-2 rounded-xl border border-slate-700 hover:bg-slate-700 transition">
-          <input type="checkbox" id="timerEnabledCheck" checked class="w-4 h-4 text-yellow-500 accent-yellow-600 rounded">
-          <span>Sablier de 15 secondes</span>
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400 pt-4 font-semibold">
+        <label class="flex items-center gap-2 cursor-pointer bg-slate-900 px-4 py-2 rounded-lg border border-slate-700 hover:bg-slate-800 transition">
+          <input type="checkbox" id="timerEnabledCheck" checked class="w-4 h-4 accent-amber-500 rounded">
+          <span>Sablier (15s)</span>
         </label>
-        <span class="text-slate-600">•</span>
-        <div class="text-xs text-slate-500">
-          Grimoire : <span id="poolCountText" class="text-yellow-500 font-bold">100</span> questions prêtes
+        <div class="bg-slate-900 px-4 py-2 rounded-lg border border-slate-700 text-slate-300">
+          Grimoire : <span id="poolCountText" class="text-amber-400 font-bold font-magic text-xl">100</span> sortilèges
         </div>
       </div>
     </section>
 
     <!-- SCREEN 2: QUESTION EN COURS -->
     <section id="screen-quiz" class="w-full hidden space-y-6">
-
-      <!-- Barre d'état (Scores, Tour, Minuteur) -->
-      <div class="bg-slate-800/90 backdrop-blur-md rounded-2xl p-4 border border-slate-700 flex flex-wrap items-center justify-between gap-4 shadow-lg">
-        <!-- Info progression -->
+      
+      <!-- Barre d'état -->
+      <div class="bg-slate-900/90 rounded-2xl p-4 border border-amber-600/50 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         <div class="flex items-center gap-3">
-          <span class="text-xs uppercase font-extrabold tracking-wider px-2.5 py-1 rounded bg-slate-900 text-yellow-500 border border-yellow-500/30 font-magic" id="currentRoundBadge">
-            Q1 / 10
+          <span class="text-lg px-3 py-1 rounded bg-slate-950 border border-amber-500/30 text-amber-500 font-magic" id="currentRoundBadge">
+            Q1/10
           </span>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-md" id="categoryBadge">
-            LEGO Harry Potter
+          <span class="text-xs font-bold px-3 py-1 rounded-full text-white bg-purple-900 border border-purple-500" id="categoryBadge">
+            Univers
           </span>
         </div>
 
-        <!-- Mode Duel Status -->
-        <div id="duelHeaderWidget" class="hidden flex items-center gap-4 text-xs font-bold">
-          <div id="teamAStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-red-500 font-magic tracking-wide" id="uiTeamAName">GRYFFONDOR</span> : <span id="teamAScore" class="text-white text-sm">0</span>
+        <div id="duelHeaderWidget" class="hidden flex items-center gap-3 text-xs font-bold">
+          <div id="teamAStatus" class="px-3 py-1.5 rounded transition-all border-2">
+            <span class="font-magic text-lg md:text-xl tracking-wide uppercase" id="uiTeamAName">GRYFFONDOR</span> <span class="mx-1 opacity-50">|</span> <span id="teamAScore" class="text-lg">0</span>
           </div>
-          <span class="text-slate-500 font-black font-magic italic text-lg">VS</span>
-          <div id="teamBStatus" class="px-3 py-1.5 rounded-lg border transition">
-            <span class="text-green-500 font-magic tracking-wide" id="uiTeamBName">SERPENTARD</span> : <span id="teamBScore" class="text-white text-sm">0</span>
+          <span class="text-slate-500 font-magic text-xl">VS</span>
+          <div id="teamBStatus" class="px-3 py-1.5 rounded transition-all border-2">
+            <span class="font-magic text-lg md:text-xl tracking-wide uppercase" id="uiTeamBName">SERPENTARD</span> <span class="mx-1 opacity-50">|</span> <span id="teamBScore" class="text-lg">0</span>
           </div>
         </div>
 
-        <!-- Solo Score -->
-        <div id="soloHeaderWidget" class="text-sm font-semibold text-slate-300">
-          <span id="uiSoloName" class="font-magic tracking-wide">Points</span> : <span id="soloScore" class="text-yellow-500 font-magic font-bold text-xl">0</span> pts
+        <div id="soloHeaderWidget" class="text-sm font-bold text-amber-100 bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-600">
+          <span id="uiSoloName" class="font-magic text-xl tracking-wider text-amber-400 uppercase">NOM</span> <span class="mx-2 opacity-50">|</span> <span id="soloScore" class="text-white font-magic text-xl">0</span> pts
         </div>
 
-        <!-- Timer Circle -->
-        <div id="timerContainer" class="flex items-center gap-2 font-magic">
-          <div id="timerBox" class="w-11 h-11 rounded-full bg-slate-900 border-2 border-yellow-500 flex items-center justify-center font-black text-yellow-500 text-lg transition-colors shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+        <div id="timerContainer" class="flex items-center gap-3 font-magic">
+          <!-- BOUTON JOKER -->
+          <button id="jokerBtn" onclick="app.useJoker5050()" class="flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-purple-700 to-indigo-800 hover:from-purple-600 hover:to-indigo-700 text-white font-bold text-sm border-2 border-purple-400 hp-button shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all" title="Utiliser la Divination (1 par partie)">
+            <span class="mr-2 text-xl">🔮</span> 50/50
+          </button>
+
+          <div id="timerBox" class="w-12 h-12 rounded-full bg-slate-950 border-4 border-amber-500 flex items-center justify-center text-amber-500 text-2xl shadow-inner transition-colors">
             15
           </div>
         </div>
       </div>
 
-      <!-- Turn Indicator for Duel Mode -->
       <div id="teamTurnIndicator" class="hidden text-center py-1">
-        <p class="text-sm font-bold tracking-wide uppercase font-magic text-xl" id="teamTurnText">
-          C'est au tour de <span class="text-red-500">GRYFFONDOR</span> !
+        <p class="text-2xl md:text-3xl font-magic tracking-wider text-white drop-shadow-md" id="teamTurnText">
+          C'est au tour de <span class="text-amber-400 uppercase">GRYFFONDOR</span> !
         </p>
       </div>
 
       <!-- Question Card -->
-      <div class="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
-        <!-- Bandeau décoratif -->
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-yellow-700 via-yellow-500 to-yellow-700"></div>
-
-        <div class="min-h-[100px] flex items-center justify-center text-center mt-2">
-          <h3 id="questionText" class="text-xl md:text-2xl font-bold text-white leading-snug font-serif">
-            Le sortilège est en cours de lancement...
+      <div class="magic-panel rounded-2xl p-6 md:p-8 relative">
+        <div class="min-h-[100px] flex items-center justify-center text-center">
+          <h3 id="questionText" class="text-2xl md:text-3xl font-inter font-bold text-amber-50 leading-tight drop-shadow-md">
+            Lecture du sortilège...
           </h3>
         </div>
 
-        <!-- Options Container -->
-        <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mt-8">
+        <div id="optionsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
           <!-- Injecté dynamiquement -->
         </div>
 
-        <!-- Feedback & Explication -->
-        <div id="feedbackContainer" class="hidden mt-6 p-4 rounded-xl border transition-all text-center space-y-2">
-          <div id="feedbackTitle" class="font-magic font-bold text-xl tracking-wide uppercase"></div>
-          <p id="feedbackExplanation" class="text-sm text-slate-300"></p>
-          <button id="nextBtn" onclick="app.nextQuestion()" class="mt-4 px-6 py-2.5 bg-yellow-600 hover:bg-yellow-500 text-slate-900 font-extrabold font-magic text-lg tracking-wider rounded-xl transition shadow-lg inline-flex items-center gap-2">
-            <span>QUESTION SUIVANTE</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        <div id="feedbackContainer" class="hidden mt-8 p-5 rounded-xl border-2 text-center space-y-3 bg-slate-900/80">
+          <div id="feedbackTitle" class="font-magic text-3xl tracking-wide drop-shadow-sm"></div>
+          <p id="feedbackExplanation" class="text-base font-bold leading-snug text-slate-200"></p>
+          
+          <div id="feedbackMedia" class="w-full flex justify-center mt-3 empty:hidden overflow-hidden rounded-lg border border-slate-700"></div>
+          
+          <button id="nextBtn" onclick="app.nextQuestion()" class="mt-5 px-8 py-3 bg-slate-950 hover:bg-slate-800 text-amber-500 border border-amber-500 font-magic text-xl rounded-lg hp-button inline-flex items-center gap-2 shadow-[0_0_10px_rgba(212,175,55,0.3)]">
+            <span>PROCHAINE ÉPREUVE</span>
+            <span>➔</span>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- SCREEN 3: RÉSULTATS / BILAN DU BRIEF -->
+    <!-- SCREEN 3: RÉSULTATS -->
     <section id="screen-results" class="w-full hidden text-center space-y-8 py-6">
       <div class="space-y-3">
-        <div class="inline-block p-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-5xl mb-2" id="resultTrophyIcon">
+        <div class="inline-block p-4 rounded-full bg-slate-900 border-2 border-amber-500 text-5xl mb-2 shadow-[0_0_20px_rgba(212,175,55,0.4)]" id="resultTrophyIcon">
           🏆
         </div>
-        <h2 id="resultMainTitle" class="text-4xl md:text-5xl font-magic font-black text-white uppercase tracking-widest drop-shadow-md">
-          FIN D'ANNÉE SCOLAIRE !
+        <h2 id="resultMainTitle" class="text-5xl md:text-7xl font-magic text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] pb-2">
+          FIN DU TOURNOI
         </h2>
-        <p id="resultSubtitle" class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
-          Les points ont été comptés par les sabliers géants. Voici le bilan.
+        <p id="resultSubtitle" class="text-slate-400 max-w-md mx-auto text-base font-semibold">
+          Les points ont été attribués par Dumbledore.
         </p>
       </div>
 
-      <!-- Bilan Card -->
-      <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-xl mx-auto shadow-2xl space-y-6 relative overflow-hidden">
-        <div class="absolute -top-10 -right-10 w-40 h-40 bg-yellow-600/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-600/10 rounded-full blur-3xl"></div>
-
-        <div id="soloScoreDisplay" class="space-y-2 relative z-10">
-          <p class="text-xs uppercase tracking-widest text-slate-400 font-bold font-magic text-lg">Points remportés</p>
-          <div class="text-6xl font-magic font-black text-yellow-500 drop-shadow-md" id="finalScoreVal">8 / 10</div>
-          <div class="text-sm font-semibold text-white pt-2 bg-slate-900/50 inline-block px-4 py-1.5 rounded-full border border-slate-600" id="rankTitleBadge">Rang : Préfet-en-Chef</div>
+      <div class="magic-panel rounded-2xl p-6 md:p-10 max-w-xl mx-auto space-y-8">
+        
+        <div id="soloScoreDisplay" class="space-y-3 bg-slate-900/60 p-6 rounded-xl border border-slate-700">
+          <p class="text-2xl text-amber-200 font-magic tracking-widest uppercase">BUSE OBTENUE</p>
+          <div class="text-6xl font-magic text-amber-400 drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" id="finalScoreVal">8/10</div>
+          <div class="mt-4 inline-block px-5 py-2 rounded-lg bg-slate-950 text-amber-100 font-magic text-xl border border-amber-700" id="rankTitleBadge">Mention : Optimal</div>
         </div>
 
-        <div id="duelScoreDisplay" class="hidden space-y-5 relative z-10">
+        <div id="duelScoreDisplay" class="hidden space-y-6">
           <div class="grid grid-cols-2 gap-4">
-            <div class="p-5 rounded-2xl bg-red-950/40 border border-red-500/40 shadow-inner">
-              <span id="finalUiTeamAName" class="text-sm uppercase font-black font-magic tracking-widest text-red-500 block mb-1">GRYFFONDOR</span>
-              <span id="finalTeamAScore" class="text-5xl font-black font-magic text-white">0</span>
+            <div class="p-6 rounded-xl bg-gryffindor text-center shadow-lg">
+              <span id="finalUiTeamAName" class="text-xl font-magic tracking-wider text-amber-200 block mb-2">TEAM 1</span>
+              <span id="finalTeamAScore" class="text-6xl font-magic text-amber-400">0</span>
             </div>
-            <div class="p-5 rounded-2xl bg-green-950/40 border border-green-500/40 shadow-inner">
-              <span id="finalUiTeamBName" class="text-sm uppercase font-black font-magic tracking-widest text-green-500 block mb-1">SERPENTARD</span>
-              <span id="finalTeamBScore" class="text-5xl font-black font-magic text-white">0</span>
+            <div class="p-6 rounded-xl bg-slytherin text-center shadow-lg">
+              <span id="finalUiTeamBName" class="text-xl font-magic tracking-wider text-slate-200 block mb-2">TEAM 2</span>
+              <span id="finalTeamBScore" class="text-6xl font-magic text-white">0</span>
             </div>
           </div>
-          <div id="duelWinnerText" class="text-xl font-bold font-magic text-white tracking-wide uppercase bg-slate-900/50 py-2 rounded-lg border border-slate-700">
-            La Coupe des 4 Maisons revient à Gryffondor !
+          <div id="duelWinnerText" class="text-3xl font-magic tracking-wider text-white bg-amber-700 py-4 rounded-xl border-2 border-amber-400 shadow-[0_0_15px_rgba(212,175,55,0.5)]">
+            La Maison gagne !
           </div>
         </div>
 
-        <!-- Conseil / Punchline LEGO pour la journée -->
-        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700 text-left flex gap-3 items-center relative z-10">
-          <span class="text-2xl">✨</span>
-          <div class="text-xs md:text-sm text-slate-300">
-            <strong class="text-white block font-magic text-base tracking-wide">OBJECTIF DU JOUR :</strong>
-            <span id="dailyMotto">Accio Ventes ! Que la magie opère sur le floor aujourd'hui.</span>
+        <div class="p-5 rounded-lg bg-slate-950 border border-slate-800 text-left flex gap-4 items-center">
+          <span class="text-4xl">🦉</span>
+          <div class="text-sm md:text-base text-slate-300 font-semibold">
+            <strong class="text-amber-500 block font-magic text-xl tracking-wide mb-1">MOT DE DUMBLEDORE :</strong>
+            <span id="dailyMotto">Ce sont nos choix qui montrent ce que nous sommes vraiment... Bonnes ventes aujourd'hui !</span>
           </div>
         </div>
 
-        <!-- Boutons d'action -->
-        <div class="flex flex-col sm:flex-row gap-3 justify-center pt-4 relative z-10">
-          <button onclick="app.showScreen('welcome')" class="px-6 py-3 rounded-xl bg-yellow-600 hover:bg-yellow-500 text-slate-900 font-bold font-magic tracking-wider text-lg transition shadow-lg">
-            GRANDE SALLE
+        <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          <button onclick="app.showScreen('welcome')" class="px-6 py-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-magic text-lg hp-button border border-slate-700">
+            SALLE COMMUNE
           </button>
-          <button onclick="app.restartWithSameSettings()" class="px-6 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-magic tracking-wider text-lg border border-slate-600 transition">
-            REJOUER
-          </button>
-          <button onclick="app.showLeaderboard()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-yellow-400 font-magic tracking-wider text-lg border border-yellow-500/30 transition">
-            PALMARÈS
+          <button onclick="app.restartWithSameSettings()" class="px-6 py-3 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-magic text-lg hp-button border border-amber-500 shadow-[0_0_10px_rgba(212,175,55,0.4)]">
+            RELANCER
           </button>
         </div>
       </div>
@@ -302,31 +293,30 @@
     <!-- SCREEN 4: CLASSEMENT -->
     <section id="screen-leaderboard" class="w-full hidden text-center space-y-8 py-6 relative z-10">
       <div class="space-y-3">
-        <h2 class="text-4xl md:text-5xl font-magic font-black text-white uppercase tracking-widest drop-shadow-md">
-          SALLE DES TROPHÉES
+        <h2 class="text-4xl md:text-6xl font-magic text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] pb-2">
+          LA SALLE DES TROPHÉES
         </h2>
-        <p class="text-slate-400 max-w-md mx-auto text-sm md:text-base">
-          Les meilleurs sorciers et sorcières de l'histoire du magasin.
+        <p class="text-slate-400 max-w-md mx-auto text-base font-semibold">
+          Les sorciers et sorcières les plus émérites du magasin.
         </p>
       </div>
 
-      <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl">
-        <!-- Onglets -->
-        <div class="flex gap-4 border-b border-slate-700 mb-6 pb-2 justify-center font-magic text-lg tracking-wide">
-          <button onclick="app.renderLeaderboardList('solo')" id="tabSolo" class="text-yellow-500 border-b-2 border-yellow-500 px-4 py-2">B.U.S.E (SOLO)</button>
-          <button onclick="app.renderLeaderboardList('duel')" id="tabDuel" class="text-slate-500 hover:text-slate-300 px-4 py-2 transition">CLUB DE DUEL</button>
+      <div class="magic-panel rounded-2xl p-6 md:p-8 max-w-2xl mx-auto">
+        <div class="flex gap-4 border-b border-slate-700 mb-6 pb-2 justify-center font-magic text-xl">
+          <button onclick="app.renderLeaderboardList('solo')" id="tabSolo" class="text-amber-400 border-b-2 border-amber-500 px-4 py-2 transition-colors">Préfets (Solos)</button>
+          <button onclick="app.renderLeaderboardList('duel')" id="tabDuel" class="text-slate-500 hover:text-slate-300 px-4 py-2 transition-colors">Coupes des Maisons</button>
         </div>
 
-        <div id="leaderboardList" class="space-y-3 text-left">
+        <div id="leaderboardList" class="space-y-4 text-left max-h-[50vh] overflow-y-auto pr-2">
           <!-- Injecté dynamiquement -->
         </div>
         
         <div class="mt-8 flex justify-center gap-4">
-          <button onclick="app.showScreen('welcome')" class="px-6 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-magic tracking-wider text-lg transition border border-slate-600">
-            RETOUR À L'ACCUEIL
+          <button onclick="app.showScreen('welcome')" class="px-8 py-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-magic text-lg hp-button border border-slate-700">
+            RETOUR
           </button>
-          <button onclick="app.clearLeaderboard()" class="px-4 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-400 font-semibold text-xs border border-red-900 transition flex items-center">
-            Nettoyer la salle
+          <button onclick="app.clearLeaderboard()" class="px-5 py-3 rounded-lg bg-red-900/30 hover:bg-red-900/60 text-red-400 font-inter font-bold text-sm hp-button border border-red-800 transition">
+            Oubliettes (Effacer)
           </button>
         </div>
       </div>
@@ -335,261 +325,283 @@
   </main>
 
   <!-- MODAL: CHOIX DES NOMS -->
-  <div id="nameSetupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl shadow-yellow-900/20">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-700">
-        <h3 class="text-xl font-bold font-magic tracking-wider text-white uppercase">Inscription à Poudlard</h3>
-        <button onclick="app.closeNameSetup()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none">&times;</button>
+  <div id="nameSetupModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="magic-panel rounded-2xl max-w-md w-full p-8 space-y-6 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-amber-600/50">
+        <h3 class="text-3xl font-magic tracking-wide text-amber-400">INSCRIPTION</h3>
+        <button onclick="app.closeNameSetup()" class="text-slate-500 hover:text-amber-500 text-3xl font-bold leading-none transition">&times;</button>
       </div>
       
-      <form id="nameSetupForm" onsubmit="app.startWithNames(event)" class="space-y-4 text-sm">
+      <form id="nameSetupForm" onsubmit="app.startWithNames(event)" class="space-y-5">
         <div id="soloNameInput" class="space-y-2">
-          <label class="block text-slate-300 text-xs font-semibold">Nom du Sorcier (ou du groupe)</label>
-          <input type="text" id="participantName" placeholder="Ex: Harry Potter, L'équipe Matin..." class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white focus:outline-none focus:border-yellow-500 transition">
+          <label class="block text-slate-300 text-sm font-bold uppercase">Nom du Sorcier</label>
+          <input type="text" id="participantName" placeholder="Ex: Harry, Hermione..." class="w-full bg-slate-950 border-2 border-slate-700 rounded-lg p-3 text-white font-bold focus:outline-none focus:border-amber-500 transition">
         </div>
 
-        <div id="duelNameInputs" class="space-y-4 hidden">
+        <div id="duelNameInputs" class="space-y-5 hidden">
           <div>
-            <label class="block text-red-500 text-xs font-bold font-magic tracking-wide uppercase mb-1">Maison 1 (Rouge)</label>
-            <input type="text" id="team1Name" value="Gryffondor" class="w-full bg-slate-900 border border-red-500/50 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 transition">
+            <label class="block text-red-500 font-magic text-xl mb-1">Maison 1 (Rouge/Or)</label>
+            <input type="text" id="team1Name" value="Gryffondor" class="w-full bg-slate-950 border-2 border-red-900 rounded-lg p-3 text-red-400 font-bold focus:outline-none focus:border-red-500 transition">
           </div>
           <div>
-            <label class="block text-green-500 text-xs font-bold font-magic tracking-wide uppercase mb-1">Maison 2 (Vert)</label>
-            <input type="text" id="team2Name" value="Serpentard" class="w-full bg-slate-900 border border-green-500/50 rounded-lg p-3 text-white focus:outline-none focus:border-green-500 transition">
+            <label class="block text-green-500 font-magic text-xl mb-1">Maison 2 (Vert/Argent)</label>
+            <input type="text" id="team2Name" value="Serpentard" class="w-full bg-slate-950 border-2 border-green-900 rounded-lg p-3 text-green-400 font-bold focus:outline-none focus:border-green-500 transition">
           </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-4">
-          <button type="button" onclick="app.closeNameSetup()" class="px-5 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-magic tracking-wide text-lg transition">ANNULER</button>
-          <button type="submit" class="px-6 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-slate-900 font-bold font-magic tracking-widest text-lg shadow-lg shadow-yellow-500/30 transition">LANCER LE BRIEF</button>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" onclick="app.closeNameSetup()" class="px-5 py-3 rounded-lg bg-slate-900 text-slate-300 font-inter font-bold hover:bg-slate-800 hp-button">Annuler</button>
+          <button type="submit" class="px-6 py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-magic text-lg hp-button border border-amber-400 shadow-[0_0_10px_rgba(212,175,55,0.4)]">PARTICIPER</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL: AJOUT DE QUESTION -->
-  <div id="customModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-700">
-        <h3 class="text-xl font-bold font-magic text-yellow-500 tracking-wider">AJOUTER AU GRIMOIRE</h3>
-        <button onclick="app.closeCustomModal()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none">&times;</button>
+  <div id="customModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="magic-panel rounded-2xl max-w-lg w-full p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-3 border-b border-amber-600/50">
+        <h3 class="text-2xl font-magic text-amber-400">NOUVELLE PAGE DU GRIMOIRE</h3>
+        <button onclick="app.closeCustomModal()" class="text-slate-500 hover:text-amber-500 text-3xl font-bold leading-none transition">&times;</button>
       </div>
-      <form id="addQuestionForm" onsubmit="app.handleCustomQuestionSubmit(event)" class="space-y-4 text-sm">
+      <form id="addQuestionForm" onsubmit="app.handleCustomQuestionSubmit(event)" class="space-y-4 text-sm font-bold text-slate-300">
         <div>
-          <label class="block text-slate-300 font-semibold mb-1">Intitulé de la question</label>
-          <textarea id="custQText" required rows="2" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-white focus:border-yellow-500 focus:outline-none" placeholder="Ex: Quel est le mot de passe de la Grosse Dame ?"></textarea>
-        </div>
-        <div>
-          <label class="block text-emerald-400 font-bold mb-1">Bonne réponse</label>
-          <input type="text" id="custQCorrect" required class="w-full bg-emerald-950/30 border border-emerald-500/50 rounded-lg p-2 text-white focus:border-emerald-400 focus:outline-none" placeholder="Ex: Caput Draconis">
-        </div>
-        <div class="space-y-2">
-          <label class="block text-red-400 font-bold">Mauvaises réponses</label>
-          <input type="text" id="custQWrong1" required class="w-full bg-red-950/30 border border-red-500/50 rounded-lg p-2 text-white focus:border-red-400 focus:outline-none" placeholder="Fausse réponse 1">
-          <input type="text" id="custQWrong2" class="w-full bg-red-950/30 border border-red-500/50 rounded-lg p-2 text-white focus:border-red-400 focus:outline-none" placeholder="Fausse réponse 2 (Optionnelle)">
-          <input type="text" id="custQWrong3" class="w-full bg-red-950/30 border border-red-500/50 rounded-lg p-2 text-white focus:border-red-400 focus:outline-none" placeholder="Fausse réponse 3 (Optionnelle)">
+          <label class="block mb-1.5 uppercase tracking-wide">L'Énigme (Question)</label>
+          <textarea id="custQText" required rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-amber-500" placeholder="Ex: Quel sortilège ouvre les portes ?"></textarea>
         </div>
         <div>
-          <label class="block text-slate-300 font-semibold mb-1">Anecdote / Explication (Optionnel)</label>
-          <textarea id="custQExpl" rows="2" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-white focus:border-yellow-500 focus:outline-none" placeholder="Ex: C'est le tout premier mot de passe utilisé en première année..."></textarea>
+          <label class="block text-green-400 mb-1.5 uppercase tracking-wide">Vérité (Bonne réponse)</label>
+          <input type="text" id="custQCorrect" required class="w-full bg-slate-950 border border-green-800 rounded-lg p-3 text-green-400 focus:outline-none" placeholder="Alohomora">
         </div>
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-700">
-          <button type="button" onclick="app.closeCustomModal()" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-magic tracking-wide text-lg">ANNULER</button>
-          <button type="submit" class="px-6 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-magic tracking-widest text-lg shadow-lg">AJOUTER</button>
+        <div class="space-y-3">
+          <label class="block text-red-400 uppercase tracking-wide">Illusions (Mauvaises réponses)</label>
+          <input type="text" id="custQWrong1" required class="w-full bg-slate-950 border border-red-900/50 rounded-lg p-3 text-red-300 focus:outline-none" placeholder="Lumos">
+          <input type="text" id="custQWrong2" class="w-full bg-slate-950 border border-red-900/50 rounded-lg p-3 text-red-300 focus:outline-none" placeholder="Expelliarmus (Optionnel)">
+          <input type="text" id="custQWrong3" class="w-full bg-slate-950 border border-red-900/50 rounded-lg p-3 text-red-300 focus:outline-none" placeholder="Oubliettes (Optionnel)">
+        </div>
+        
+        <div>
+          <label class="block mb-1.5 mt-2 text-blue-400 uppercase tracking-wide">Lien Image ou Vidéo YT (Optionnel)</label>
+          <input type="text" id="custQMedia" class="w-full bg-slate-950 border border-blue-900 rounded-lg p-3 text-blue-300 focus:outline-none" placeholder="Ex: https://www.youtube.com/watch?v=...">
+        </div>
+
+        <div>
+          <label class="block mb-1.5 mt-2 uppercase tracking-wide">Sagesse (Explication)</label>
+          <textarea id="custQExpl" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 focus:outline-none focus:border-amber-500 text-amber-200" placeholder="Ex: Ce sortilège est enseigné en première année..."></textarea>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 border-t border-amber-600/50">
+          <button type="button" onclick="app.closeCustomModal()" class="px-5 py-3 rounded-lg bg-slate-900 text-slate-300 hp-button">Annuler</button>
+          <button type="submit" class="px-6 py-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-magic text-lg hp-button shadow-[0_0_10px_rgba(212,175,55,0.4)]">AJOUTER</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- FOOTER -->
-  <footer class="w-full text-center py-4 text-xs text-slate-500 border-t border-slate-800/80 relative z-10 bg-slate-900/50 mt-auto">
-    <p>Conçu pour animer le brief d'équipe • LEGO® & Harry Potter™ • Méfaits accomplis ! 🪄</p>
+  <footer class="w-full text-center py-5 text-xs text-slate-500 font-bold relative z-10 mt-auto font-inter">
+    <p>LEGO® Harry Potter Quiz • +100 Questions & Joker 50/50 • Magie en rayon ! ✨</p>
   </footer>
 
   <script>
     /**
-     * BANQUE DE 100 QUESTIONS HARRY POTTER & LEGO HARRY POTTER
+     * BANQUE DE 100 QUESTIONS: LEGO HARRY POTTER & LORE
      */
     const INITIAL_QUESTIONS = [
-      // LEGO HARRY POTTER : SETS & HISTOIRE (1-20)
-      { question: "En quelle année est sortie la toute première vague de sets LEGO Harry Potter ?", options: ["2001", "1999", "2003", "2005"], correct: 0, category: "Histoire LEGO", explanation: "Les premiers sets, accompagnant la sortie du film 'L'École des Sorciers', sont sortis fin 2001. Les figurines avaient alors la peau jaune !" },
-      { question: "Quel set gigantesque (71043) sorti en 2018 contient plus de 6000 pièces et reproduit Poudlard à l'échelle microscale ?", options: ["Le Château de Poudlard (Hogwarts Castle)", "Le Chemin de Traverse", "Gringotts", "Le Poudlard Express UCS"], correct: 0, category: "Gros Sets LEGO", explanation: "Le Château (71043) est une prouesse architecturale comprenant des dizaines de micro-figurines et les salles de classe sous le château." },
-      { question: "Dans les tous premiers sets LEGO Harry Potter (2001-2002), quelle particularité avaient certaines figurines de fantômes ?", options: ["Elles brillaient dans le noir (Glow in the dark)", "Elles volaient avec des aimants", "Elles étaient transparentes bleues", "Elles faisaient du bruit"], correct: 0, category: "Histoire LEGO", explanation: "Des figurines comme Nick Quasi-Sans-Tête ou le Professeur Rogue (dans le set 4705) avaient des têtes qui brillaient dans le noir." },
-      { question: "Quel immense set de 2020 (75978) permet de construire 4 bâtiments du célèbre marché magique de Londres ?", options: ["Le Chemin de Traverse (Diagon Alley)", "Pré-au-Lard (Hogsmeade)", "Le Ministère de la Magie", "L'Allée des Embrumes"], correct: 0, category: "Gros Sets LEGO", explanation: "Le Chemin de Traverse de 5544 pièces comprend notamment la boutique d'Ollivander et Farces pour Sorciers Facétieux." },
-      { question: "Quel set de 2023 (76417) permet de construire une immense banque perchée au-dessus de ses cavernes souterraines ?", options: ["La Banque des Sorciers Gringotts", "Azkaban", "Le Ministère de la Magie", "La Chambre des Secrets"], correct: 0, category: "Gros Sets LEGO", explanation: "Un set spectaculaire comprenant la banque immaculée qui repose en équilibre sur un système de chariots et de cavernes." },
-      { question: "Dans le set LEGO Poudlard Express - Édition Collector (76405), quelle scène trouve-t-on à bord du train ?", options: ["3 scènes de 3 films différents (1, 3 et 6)", "Uniquement la rencontre avec les Détraqueurs", "La scène du chariot à bonbons", "Un compartiment vide avec la cape d'invisibilité"], correct: 0, category: "Gros Sets LEGO", explanation: "Les trois wagons contiennent des scènes du film 1 (rencontre), du film 3 (détraqueur) et du film 6 (Drago pétrifie Harry)." },
-      { question: "Quelle gamme LEGO Harry Potter permet de collectionner des tuiles imprimées rappelant les Cartes de Chocogrenouilles (sorties en 2021) ?", options: ["Les tuiles dorées 2x2 à collectionner", "Les BrickHeadz", "Les dots Harry Potter", "Les Microfighters"], correct: 0, category: "Collection LEGO", explanation: "Pour les 20 ans de la gamme en 2021, LEGO a caché 16 tuiles 'Chocogrenouille' exclusives dans ses sets." },
-      { question: "Dans le set du Tournoi des Trois Sorciers (Le Magyar à pointes - 76406), quelle est la fonctionnalité principale du dragon ?", options: ["Une manivelle permet de faire battre ses ailes", "Il crache du feu avec un ressort", "Ses yeux s'allument", "Il vole grâce à un aimant"], correct: 0, category: "Sets LEGO", explanation: "Tout comme le set Hedwige (75979) et Fumseck (76394), une petite manivelle actionne un mécanisme de vol fluide." },
-      { question: "Pour marquer l'anniversaire des 20 ans de la gamme, quelle couleur ont adopté les 6 figurines exclusives dispersées dans les sets de 2021 ?", options: ["Entièrement dorées", "Blanches nacrées", "Argentées", "Transparentes"], correct: 0, category: "Minifigures", explanation: "Les figurines de Harry, Ron, Hermione, Voldemort, Rogue et Quirrell ont été moulées en 'Pearl Gold' (Or)." },
-      { question: "Dans le set 'La Cabane de Hagrid', quel objet rose est très souvent caché par LEGO comme clin d'œil aux films ?", options: ["Le parapluie rose de Hagrid", "Un chaudron rose", "Un bonbon de chez Honeydukes", "Une paire de chaussettes de Dobby"], correct: 0, category: "Sets LEGO", explanation: "Le fameux parapluie rose, dans lequel Hagrid cache les restes de sa baguette brisée." },
-      { question: "Quelle grande icône constructible (76391) permet de bâtir Hedwige transportant la lettre d'admission, les lunettes et la baguette de Harry ?", options: ["Icônes de Poudlard - Édition Collector", "Le Bureau de Dumbledore", "Le Manuel des Sorciers", "La Valise de Norbert Dragonneau"], correct: 0, category: "Gros Sets LEGO", explanation: "Un set d'exposition magnifique comprenant aussi trois figurines dorées exclusives et une tuile 'invitation' personnalisable." },
-      { question: "Dans l'univers LEGO Harry Potter récent, le château de Poudlard fonctionne avec un système...", options: ["Modulaire (on peut clipser et empiler les pièces entre elles)", "Fixe (un seul gros bloc)", "Magnétique", "Mécanique (il se replie)"], correct: 0, category: "Gamme LEGO", explanation: "Depuis 2018 (et avec un reboot en 2021 puis 2024), les sets Poudlard sont pensés pour être assemblés et créer un château géant." },
-      { question: "Dans les tout premiers sets LEGO de 2001, quelle méthode était utilisée pour représenter les toits du château de Poudlard ?", options: ["De grandes pièces de toiture en carton plastifié vert", "Des tuiles marron", "De grands cônes gris", "Aucun toit n'était inclus"], correct: 0, category: "Histoire LEGO", explanation: "Certains des premiers sets utilisaient de grandes pièces coniques en carton/plastique vert pomme (et parfois gris)." },
-      { question: "Quel personnage LEGO Harry Potter a été le tout premier à posséder la courte pièce de jambes immobiles (Short Legs) ?", options: ["Yoda, puis les gobelins de Gringotts", "Dobby l'elfe de maison", "Harry Potter enfant", "Le Professeur Flitwick"], correct: 0, category: "Histoire LEGO", explanation: "Créée pour Yoda en 2002, cette pièce a vite été adoptée par la gamme HP pour les enfants et créatures magiques." },
-      { question: "Quel set LEGO de 2022 (76403) représente le siège du pouvoir sorcier britannique ?", options: ["Le Ministère de la Magie", "Sainte-Mangouste", "La Prison d'Azkaban", "Le Manoir des Malefoy"], correct: 0, category: "Sets LEGO", explanation: "C'est le premier gros set représentant le Ministère, avec les bureaux de l'Ombrage et l'atrium." },
-      { question: "Quelle créature volante géante et terrifiante est incluse dans le set de la Cour de Sauvetage de Sirius (76401) ?", options: ["Buck l'hippogriffe", "Un Sombral", "Le Magyar à Pointes", "Un Détraqueur"], correct: 0, category: "Sets LEGO", explanation: "C'est Buck, l'hippogriffe, qui permet à Sirius Black de s'enfuir à la fin du Prisonnier d'Azkaban." },
-      { question: "Quel objet magique à construire (76419) représente l'ensemble du domaine de Poudlard, incluant le lac et le vaisseau de Durmstrang ?", options: ["Le Château et le Domaine de Poudlard (Architecture/Microscale)", "La Carte du Maraudeur", "Le Livre des Monstres", "Le Retourneur de Temps"], correct: 0, category: "Gros Sets LEGO", explanation: "C'est la version diorama 'Architecture' de Poudlard sortie en 2023, plus petite que le set de 2018 mais très détaillée." },
-      { question: "Dans la gamme LEGO Art, quel set (31201) permettait de construire les blasons des 4 maisons ?", options: ["Blasons de Poudlard", "Portraits des Fondateurs", "La Carte de Poudlard", "Le Choixpeau Magique"], correct: 0, category: "Gamme LEGO", explanation: "On pouvait construire au choix le blason de Gryffondor, Serpentard, Serdaigle ou Poufsouffle, ou les 4 réunis avec 4 boîtes." },
-      { question: "Quel objet magique culte a récemment eu droit à une réplique LEGO capable de 'parler' grâce à une brique sonore (76429) ?", options: ["Le Choixpeau Magique", "Une Mandragore", "Le Livre des Monstres", "La Beuglante"], correct: 0, category: "Sets LEGO", explanation: "Le Choixpeau Magique constructible de 2024 inclut une brique sonore aléatoire qui annonce votre Maison !" },
-      { question: "En quelle année LEGO a-t-il relancé en grande pompe la gamme Harry Potter, introduisant les mini-jambes articulées ?", options: ["2018", "2015", "2020", "2011"], correct: 0, category: "Histoire LEGO", explanation: "En 2018, avec la sortie des Animaux Fantastiques 2, la gamme classique a été rebootée avec un niveau de détail inédit." },
-
-      // LORE HP : PERSONNAGES, LIVRES & FILMS (21-100)
-      { question: "Quel est le nom complet de Dumbledore ?", options: ["Albus Perceval Wulfric Brian Dumbledore", "Albus Severus Dumbledore", "Albus Gellert Grindelwald Dumbledore", "Albus Rubeus Hagrid Dumbledore"], correct: 0, category: "Personnages", explanation: "Il a beaucoup de prénoms, ce qui fait souvent sourire dans les livres !" },
-      { question: "Quel est l'animal de compagnie de Neville Londubat ?", options: ["Un crapaud (Trevor)", "Un hibou (Errol)", "Un rat (Croûtard)", "Un chat (Pattenrond)"], correct: 0, category: "Animaux", explanation: "C'est Trevor, le crapaud qui passe son temps à s'échapper." },
-      { question: "Comment s'appelle le sortilège de Lévitation ?", options: ["Wingardium Leviosa", "Ascendio", "Levicorpus", "Mobilicorpus"], correct: 0, category: "Sortilèges", explanation: "C'est LeviOsa, pas LeviosAA ! (Hermione Granger)." },
-      { question: "Qu'est-ce qu'un Cracmol (Squib) ?", options: ["Une personne née de parents sorciers mais dépourvue de pouvoirs", "Un gobelin qui a perdu sa magie", "Un moldu qui a appris la magie", "Une créature maléfique des bois"], correct: 0, category: "Lore Magique", explanation: "C'est l'inverse d'un Né-Moldu (comme Hermione). Argus Rusard est un Cracmol." },
-      { question: "Quel est l'épouvantard (Peur la plus profonde) de Ron Weasley ?", options: ["Une araignée géante", "Un Détraqueur", "Le Professeur Rogue", "Voir Hermione échouer à un examen"], correct: 0, category: "Créatures", explanation: "Ron est arachnophobe. Son épouvantard est donc une acromentule (une araignée géante)." },
-      { question: "Combien y a-t-il de joueurs dans une équipe de Quidditch ?", options: ["7", "6", "8", "9"], correct: 0, category: "Quidditch", explanation: "Il y en a 7 : 3 Poursuiveurs, 2 Batteurs, 1 Gardien et 1 Attrapeur." },
-      { question: "Quel bois compose la baguette de Harry Potter ?", options: ["Le houx", "L'if", "Le saule", "Le chêne"], correct: 0, category: "Baguettes", explanation: "En bois de houx. Celle de Voldemort est en bois d'if. Les deux partagent le même coeur (plume de Fumseck)." },
-      { question: "Qui était le prisonnier d'Azkaban dans le 3ème livre/film ?", options: ["Sirius Black", "Bellatrix Lestrange", "Barty Croupton Jr.", "Igor Karkaroff"], correct: 0, category: "Histoire", explanation: "Sirius Black, le parrain de Harry, accusé à tort d'avoir tué Peter Pettigrow et 12 moldus." },
-      { question: "Qu'est-ce qui nourrit et détruit les Détraqueurs ?", options: ["Ils se nourrissent de la joie, repoussés par le sortilège du Patronus", "Ils boivent le sang, tués par l'argent", "Ils mangent de l'or, repoussés par la lumière", "Ils se nourrissent de la peur, tués par le feu"], correct: 0, category: "Créatures", explanation: "Le Détraqueur aspire tout espoir. Seul un Patronus (Spero Patronum) peut les repousser." },
-      { question: "Quel personnage féminin est surnommée 'Loufoca' par les autres élèves ?", options: ["Luna Lovegood", "Ginny Weasley", "Lavande Brown", "Pansy Parkinson"], correct: 0, category: "Personnages", explanation: "Luna Lovegood (Loony Lovegood en VO), en raison de son excentricité." },
-
-      { question: "Quel mot de passe ouvre la porte du bureau de Dumbledore dans la Chambre des Secrets ?", options: ["Sorbet Citron", "Nid de Dragon", "Fizwizbiz", "Mot de passe"], correct: 0, category: "Lieux", explanation: "Dumbledore adore les friandises moldues, notamment le Sorbet Citron." },
-      { question: "Dans quel objet est caché le diadème de Serdaigle (Horcruxe) ?", options: ["Dans la Salle sur Demande", "Dans le coffre des Lestrange", "Dans la cabane des Gaunt", "Sous le Choixpeau"], correct: 0, category: "Horcruxes", explanation: "Harry le trouve dans la Salle sur Demande (Salle des Objets Cachés) dans les Reliques de la Mort." },
-      { question: "Qui est le prince de Sang-Mêlé ?", options: ["Severus Rogue", "Voldemort", "Harry Potter", "Sirius Black"], correct: 0, category: "Personnages", explanation: "Severus Rogue (Snape). Sa mère s'appelait Eileen Prince et son père était un Moldu (Sang-Mêlé)." },
-      { question: "Quel est l'animal du Patronus d'Hermione Granger ?", options: ["Une loutre", "Une biche", "Un lièvre", "Un terrier (chien)"], correct: 0, category: "Sortilèges", explanation: "Une loutre, l'animal préféré de J.K. Rowling." },
-      { question: "Comment s'appelle le chat d'Argus Rusard ?", options: ["Miss Teigne (Mrs Norris)", "Pattenrond (Crookshanks)", "Trevor", "Touffu (Fluffy)"], correct: 0, category: "Animaux", explanation: "Miss Teigne, qui patrouille dans les couloirs avec lui." },
-      { question: "Quel professeur enseigne les Soins aux Créatures Magiques à partir de la 3ème année ?", options: ["Rubeus Hagrid", "Silvanus Brûlopot", "Remus Lupin", "Gilderoy Lockhart"], correct: 0, category: "Professeurs", explanation: "Hagrid est nommé professeur après avoir été innocenté dans l'affaire de la Chambre des Secrets." },
-      { question: "Combien y a-t-il de Horcruxes créés volontairement par Voldemort (sans compter Harry) ?", options: ["6", "7", "5", "8"], correct: 0, category: "Histoire", explanation: "Il en crée 6 (Le journal, la bague, le médaillon, la coupe, le diadème, et Nagini). Harry est le 7e, non intentionnel." },
-      { question: "Comment s'appelle la prison des sorciers gardée par les Détraqueurs ?", options: ["Azkaban", "Nurmengard", "La Tour de Londres", "Tour Sombre"], correct: 0, category: "Lieux", explanation: "Azkaban, située sur une île isolée au milieu de la mer du Nord." },
-      { question: "Quel sortilège permet d'ouvrir les portes verrouillées ?", options: ["Alohomora", "Colloportus", "Diffindo", "Evanesco"], correct: 0, category: "Sortilèges", explanation: "Alohomora, utilisé dès le premier film par Hermione pour échapper à Rusard." },
-      { question: "Quel est le prénom du frère d'Albus Dumbledore ?", options: ["Abelforth", "Gellert", "Percival", "Ignotus"], correct: 0, category: "Personnages", explanation: "Abelforth (Aberforth), le barman de La Tête de Sanglier à Pré-au-Lard." },
-
-      { question: "Qui tue Bellatrix Lestrange lors de la Bataille de Poudlard ?", options: ["Molly Weasley", "Neville Londubat", "Hermione Granger", "Minerva McGonagall"], correct: 0, category: "Histoire", explanation: "'Pas ma fille, espèce de garce !' - Molly Weasley avant de la désintégrer." },
-      { question: "Quel acteur incarne Severus Rogue dans les 8 films ?", options: ["Alan Rickman", "Gary Oldman", "Jason Isaacs", "Ralph Fiennes"], correct: 0, category: "Films / Acteurs", explanation: "L'immense Alan Rickman (Always)." },
-      { question: "Quel objet magique permet de revoir les souvenirs conservés en fiole ?", options: ["La Pensine", "Le Miroir du Riséd", "Le Retourneur de Temps", "La Boule de Cristal"], correct: 0, category: "Objets Magiques", explanation: "La Pensine (Pensieve), très utilisée par Dumbledore et Rogue." },
-      { question: "Comment s'appelle le journal sorcier britannique ?", options: ["La Gazette du Sorcier (Daily Prophet)", "Le Chicaneur", "Sorcière Hebdo", "L'Écho de Pré-au-Lard"], correct: 0, category: "Histoire", explanation: "La Gazette du Sorcier, souvent influencée par le Ministère de la Magie." },
-      { question: "Dans le premier livre, quel monstre garde la trappe sous laquelle se trouve la Pierre Philosophale ?", options: ["Touffu, le chien à trois têtes", "Le Basilic", "Un Troll des montagnes", "Un dragon Norvégien à Crête"], correct: 0, category: "Créatures", explanation: "Touffu (Fluffy), qui s'endort lorsqu'il entend de la musique." },
-      { question: "Quels sont les prénoms des jumeaux Weasley ?", options: ["Fred et George", "Bill et Charlie", "Percy et Ron", "Seamus et Dean"], correct: 0, category: "Personnages", explanation: "Les célèbres jumeaux farceurs, fondateurs de la boutique 'Farces pour sorciers facétieux'." },
-      { question: "Quelle potion permet de prendre l'apparence de quelqu'un d'autre ?", options: ["Le Polynectar", "Le Felix Felicis", "Le Véritaserum", "L'Amortentia"], correct: 0, category: "Potions", explanation: "Le Polynectar, qui met un mois à être préparé." },
-      { question: "Qui est le directeur de la maison Serpentard lors des premiers tomes ?", options: ["Severus Rogue", "Horace Slughorn", "Lucius Malefoy", "Salazar Serpentard"], correct: 0, category: "Professeurs", explanation: "Rogue (Snape), Maître des Potions, avant de devenir Directeur de Poudlard dans le tome 7." },
-      { question: "Quel sortilège est le Sortilège de Mort, impardonnable ?", options: ["Avada Kedavra", "Endoloris", "Impero", "Sectumsempra"], correct: 0, category: "Sortilèges", explanation: "L'Avada Kedavra, produisant un éclair vert mortel." },
-      { question: "Comment s'appelle la plante hurlante dont on doit rempoter les racines en 2ème année ?", options: ["La Mandragore", "Le Filet du Diable", "La Tentacula Vénéneuse", "Le Saule Cogneur"], correct: 0, category: "Créatures / Plantes", explanation: "Le cri de la Mandragore adulte est mortel. Les élèves portent des cache-oreilles pour les bébés." },
-
-      { question: "Quel animal représente la maison Serdaigle dans les livres (et non dans les films) ?", options: ["Un aigle", "Un corbeau", "Un faucon", "Un serpent"], correct: 0, category: "Maisons", explanation: "C'est bien un Aigle (Ravenclaw signifiant Serres de Corbeau, les films ont utilisé un Corbeau par erreur/simplification)." },
-      { question: "Quel fantôme hante les toilettes des filles au 2ème étage ?", options: ["Mimi Geignarde (Moaning Myrtle)", "La Dame Grise", "Peeves l'Esprit Frappeur", "Le Moine Gras"], correct: 0, category: "Personnages", explanation: "Mimi Geignarde, tuée par le Basilic lors de la première ouverture de la Chambre." },
-      { question: "Qui détruit le dernier Horcruxe (Nagini le serpent) ?", options: ["Neville Londubat", "Harry Potter", "Ron Weasley", "Hermione Granger"], correct: 0, category: "Histoire", explanation: "Neville, en utilisant l'Épée de Gryffondor sortie du Choixpeau magique." },
-      { question: "Comment s'appelle l'elfe de maison de la famille Black, hérité par Harry ?", options: ["Kreattur (Kreacher)", "Dobby", "Winky", "Hokey"], correct: 0, category: "Créatures", explanation: "Kreattur, très grincheux et fidèle aux idéaux des Sangs-Purs avant de changer de bord." },
-      { question: "Quels sont les trois objets constituant les Reliques de la Mort ?", options: ["Baguette de Sureau, Pierre de Résurrection, Cape d'Invisibilité", "Épée de Gryffondor, Diadème, Coupe", "Retourneur de Temps, Miroir, Pierre Philosophale", "Le Choixpeau, la Pensine, le Déluminateur"], correct: 0, category: "Objets Magiques", explanation: "Selon le Conte des Trois Frères, réunis, ils font de leur possesseur le Maître de la Mort." },
-      { question: "Qui est le fabricant de baguettes magiques sur le Chemin de Traverse ?", options: ["Garrick Ollivander", "Gregorovitch", "Borgin & Burkes", "Florean Fortescue"], correct: 0, category: "Lieux / Personnages", explanation: "Ollivander ('La baguette choisit son sorcier, Mr Potter')." },
-      { question: "Quel sortilège désarme l'adversaire (le sort de prédilection de Harry) ?", options: ["Expelliarmus", "Stupéfix", "Petrificus Totalus", "Tarentallegra"], correct: 0, category: "Sortilèges", explanation: "Expelliarmus, qui permet d'arracher la baguette des mains de l'adversaire." },
-      { question: "Comment se nomme la rue commerçante exclusivement réservée aux sorciers mal intentionnés ?", options: ["L'Allée des Embrumes (Knockturn Alley)", "Le Chemin de Traverse", "Pré-au-Lard", "Godric's Hollow"], correct: 0, category: "Lieux", explanation: "L'Allée des Embrumes, où se trouve le magasin Barjow et Beurk." },
-      { question: "Quelle boisson est très populaire au pub Les Trois Balais ?", options: ["La Bièraubeurre (Butterbeer)", "Le Jus de Citrouille", "L'Hydromel", "L'Élixir de Longue Vie"], correct: 0, category: "Lore Magique", explanation: "La Bièraubeurre, que les élèves consomment chaude l'hiver et froide l'été." },
-      { question: "Dans le Tournoi des Trois Sorciers, qui est la représentante de l'école française Beauxbâtons ?", options: ["Fleur Delacour", "Olympe Maxime", "Gabrielle Delacour", "Victoire Weasley"], correct: 0, category: "Personnages", explanation: "Fleur Delacour, qui a du sang de Vélane et épousera plus tard Bill Weasley." },
-
-      { question: "Comment s'appelle le grand-père de Voldemort, dernier descendant direct de Serpentard ?", options: ["Marvolo Gaunt (Elvis Marvolo)", "Salazar Gaunt", "Tom Riddle Sr.", "Corvus Lestrange"], correct: 0, category: "Histoire", explanation: "Elvis Marvolo Gaunt. Voldemort (Tom Marvolo Riddle / Tom Elvis Jedusor) tire son deuxième prénom de lui." },
-      { question: "Quel bois compose la Baguette de Sureau (Elder Wand) ?", options: ["Le Sureau", "L'If", "Le Chêne", "L'Acajou"], correct: 0, category: "Objets Magiques", explanation: "Le Sureau (Elder), réputé comme étant l'arbre de la mort." },
-      { question: "Qui remplace Dumbledore au poste de Directeur de Poudlard dans le tome 5 ?", options: ["Dolores Ombrage", "Severus Rogue", "Minerva McGonagall", "Cornelius Fudge"], correct: 0, category: "Histoire", explanation: "Dolores Ombrage, la Grande Inquisitrice (aux tenues roses)." },
-      { question: "Comment s'appelle la gare où les élèves prennent le Poudlard Express ?", options: ["King's Cross (Voie 9 3/4)", "Waterloo", "Victoria Station", "Paddington"], correct: 0, category: "Lieux", explanation: "La gare de King's Cross à Londres, quai 9 3/4." },
-      { question: "Quelle créature est Dobby ?", options: ["Un elfe de maison", "Un gobelin", "Un troll", "Un lutin de Cornouailles"], correct: 0, category: "Créatures", explanation: "Dobby est un elfe de maison, libéré grâce à une chaussette offerte innocemment par Lucius Malefoy (trompé par Harry)." },
-      { question: "Quel sortilège produit de la lumière au bout de la baguette ?", options: ["Lumos", "Nox", "Incendio", "Soleil"], correct: 0, category: "Sortilèges", explanation: "Lumos (et Nox permet de l'éteindre)." },
-      { question: "Qui est le capitaine de l'équipe de Quidditch de Gryffondor lors de la 1ère année de Harry ?", options: ["Olivier Dubois (Oliver Wood)", "Charlie Weasley", "Harry Potter", "Cormac McLaggen"], correct: 0, category: "Personnages", explanation: "Olivier Dubois, un fanatique du Quidditch." },
-      { question: "Quel est l'animal du blason de la maison Poufsouffle ?", options: ["Le blaireau", "Le renard", "L'ours", "Le lion"], correct: 0, category: "Maisons", explanation: "Le blaireau (Badger), symbole de loyauté et de travail acharné." },
-      { question: "Qui tue Albus Dumbledore à la fin du Prince de Sang-Mêlé ?", options: ["Severus Rogue", "Drago Malefoy", "Voldemort", "Bellatrix Lestrange"], correct: 0, category: "Histoire", explanation: "C'est Rogue, selon le plan arrangé d'avance avec Dumbledore lui-même (qui était déjà condamné par la bague)." },
-      { question: "Dans le film 'Le Prisonnier d'Azkaban', quel réalisateur donne une touche très sombre et 'gothique' à la saga ?", options: ["Alfonso Cuarón", "Chris Columbus", "David Yates", "Mike Newell"], correct: 0, category: "Films / Acteurs", explanation: "Le réalisateur mexicain Alfonso Cuarón a redéfini le style visuel de la saga (les 2 premiers étaient de Chris Columbus)." },
+      // --- LEGO HP HISTOIRE & SETS (1-35) ---
+      { question: "En quelle année est sortie la TOUTE PREMIÈRE vague de sets LEGO Harry Potter ?", options: ["2001", "1999", "2004", "2010"], correct: 0, category: "Histoire LEGO", explanation: "La gamme a été lancée en 2001 pour accompagner la sortie du film 'L'École des Sorciers'." },
+      { question: "Quelle particularité avaient les visages des minifigurines LEGO Harry Potter en 2001 ?", options: ["Ils étaient jaunes classiques", "Ils étaient couleur chair (nougat)", "Ils n'avaient pas de nez", "Ils brillaient dans le noir"], correct: 0, category: "Minifigures", explanation: "Comme Star Wars à l'époque, les premières figurines à licence utilisaient le jaune iconique LEGO avant le passage à la couleur chair en 2004." },
+      { question: "Quel est le set LEGO Harry Potter contenant le plus de pièces à ce jour ?", options: ["Le Château de Poudlard (71043) - 6020 pièces", "Le Chemin de Traverse (75978)", "La Banque Gringotts (76417)", "Le Poudlard Express (76405)"], correct: 0, category: "Sets UCS", explanation: "Le Château de Poudlard micro-scale de 2018 (71043) trône avec ses 6020 pièces." },
+      { question: "Dans le set collector du Chemin de Traverse (75978), quelle boutique colorée se démarque des autres ?", options: ["Weasley, Farces pour sorciers facétieux", "Ollivander", "Fleury et Bott", "Magasin d'accessoires de Quidditch"], correct: 0, category: "Sets UCS", explanation: "L'immense façade orange et violette des jumeaux Weasley avec son mannequin articulé." },
+      { question: "Quelle incroyable fonctionnalité possède la Banque Gringotts Édition Collector (76417) ?", options: ["La banque se superpose au-dessus des galeries souterraines", "Le dragon crache du vrai feu", "Les pièces en or sont en vrai métal", "Elle contient une boîte à musique intégrée"], correct: 0, category: "Sets UCS", explanation: "La majestueuse banque blanche s'emboîte parfaitement au sommet des sombres galeries du sous-sol en spirale." },
+      { question: "Le Poudlard Express Édition Collector (76405) est si grand qu'il est livré avec...", options: ["Un quai 9 3/4 constructible et un coupon de voie géant", "Une réplique de la gare de King's Cross", "Une figurine de J.K. Rowling", "Une vraie machine à vapeur"], correct: 0, category: "Sets UCS", explanation: "Le set inclut une énorme portion du Quai 9 3/4, avec un niveau de détail 18+." },
+      { question: "Depuis le grand reboot de la gamme en 2018, comment les sets du château de Poudlard sont-ils conçus ?", options: ["Ce sont des modules qui s'attachent entre eux", "Il faut tout acheter en une seule boîte", "Ils sont uniquement au format micro-scale", "Ils sont exclusivement basés sur les livres"], correct: 0, category: "Gamme LEGO", explanation: "LEGO a créé un système modulaire permettant de combiner des dizaines de sets pour former son propre grand château." },
+      { question: "Dans la gamme LEGO Art, quel set (31201) permettait de créer les écussons des maisons ?", options: ["Les blasons de Poudlard (Hogwarts Crests)", "Le portrait de Dumbledore", "La carte du maraudeur", "Le blason du Ministère"], correct: 0, category: "LEGO Art", explanation: "En combinant 4 boîtes, on pouvait même réaliser un immense blason de Poudlard." },
+      { question: "Dans les premiers sets (ex: 4709), comment les toits du château de Poudlard étaient-ils représentés ?", options: ["Par de grandes pièces vertes sable (Sand Green)", "Par des briques grises empilées", "Par des toits rouges en pente", "Il n'y avait pas de toit"], correct: 0, category: "Histoire LEGO", explanation: "Les toits iconiques Sand Green (vert sable) étaient la signature de la gamme classique avant de passer au gris foncé (Dark Gray) pour le reboot." },
+      { question: "Quelle grande créature articulée est la star du set 76421 (2023) ?", options: ["Dobby l'Elfe de maison", "Fumseck", "Hedwige", "Touffu le chien à 3 têtes"], correct: 0, category: "Créatures LEGO", explanation: "Une grande figurine constructible et posable de Dobby tenant la chaussette de la libération." },
+      { question: "Quel set 18+ permet d'exposer de grands objets magiques incluant des lunettes, une baguette et Hedwige ?", options: ["Icônes de Poudlard Édition Collector (76391)", "Le Choixpeau Magique (76429)", "La valise magique de Norbert", "Le bureau de Dumbledore"], correct: 0, category: "Sets 18+", explanation: "Un magnifique présentoir avec l'écharpe de votre maison, la lettre d'admission, la baguette, les lunettes et une superbe chouette." },
+      { question: "Quelle magie intègre le set du Choixpeau Magique (76429) sorti en 2024 ?", options: ["Une brique sonore qui fait vraiment parler le chapeau (en anglais)", "Il lévite avec des aimants", "Il change de couleur avec la température", "Il se déplie automatiquement"], correct: 0, category: "Sets 18+", explanation: "Il utilise une toute nouvelle brique sonore (Sound Brick) proposant des dizaines de combinaisons audio." },
+      { question: "Quel accessoire LEGO exclusif trouve-t-on avec la figurine de Maugrey Fol Œil ?", options: ["Un visage alternatif et des cheveux pour se transformer en Barty Croupton Jr.", "Un faux œil lumineux", "Une fiole de Polynectar transparente", "Une canne magique en vrai bois"], correct: 0, category: "Minifigures", explanation: "Comme il usurpe l'identité de Maugrey, la figurine permet la révélation sous l'effet du Polynectar." },
+      { question: "Quelle gamme permet aux plus jeunes (et collectionneurs) d'ouvrir un 'livre en briques' révélant une salle de classe ?", options: ["Les Moments Poudlard (Hogwarts Moments)", "Les Contes de Beedle le Barde", "Les Livres de sorts", "Les boîtes à secrets"], correct: 0, category: "Gamme LEGO", explanation: "Des sets en forme de livres qui se déplient pour former des cours (Potions, Botanique, Sortilèges...)." },
+      { question: "Dans le Chemin de Traverse (75978), qui est le propriétaire de la boutique de glaces ?", options: ["Florian Fortarôme", "Ollivander", "Ludo Verpey", "Tom du Chaudron Baveur"], correct: 0, category: "Sets UCS", explanation: "La boutique de glaces de Florian Fortarôme est incluse avec ses couleurs pimpantes." },
+      { question: "Comment s'appelle l'oiseau de feu de Dumbledore, qui a eu droit à son set articulé à manivelle (76394) ?", options: ["Fumseck (Fawkes)", "Hedwige", "Buck", "Coquecigrue"], correct: 0, category: "Créatures LEGO", explanation: "Un mécanisme 'Kinetic' permettait de faire battre les ailes du majestueux phénix." },
+      { question: "Quelle créature volante, visible seulement par ceux ayant vu la mort, tire les calèches de Poudlard en LEGO (76400) ?", options: ["Un Sombral (Thestral)", "Un Hippogriffe", "Un Dragon", "Un Détraqueur"], correct: 0, category: "Créatures LEGO", explanation: "Les Sombrals, magnifiquement moulés avec leurs ailes de chauve-souris et leur corps squelettique." },
+      { question: "Pour les 20 ans de la gamme en 2021, que collectionnait-on dans les boîtes ?", options: ["Des tuiles de cartes de Chocogrenouilles imprimées aléatoires", "Des baguettes dorées", "Des mini-bagues", "Des autocollants brillants"], correct: 0, category: "Collection", explanation: "Il y avait 16 cartes de sorciers célèbres (tuiles 2x2 imprimées) à collectionner aléatoirement." },
+      { question: "Quel personnage doré exclusif N'ÉTAIT PAS inclus pour les 20 ans de la gamme LEGO HP ?", options: ["Hagrid (C'était un personnage argenté/normal)", "Harry Potter", "Professeur Rogue", "Professeur Quirrell"], correct: 0, category: "Minifigures", explanation: "Les figurines dorées incluaient Harry, Ron, Hermione, Dumbledore, McGonagall, Rogue, Voldemort et Quirrell." },
+      { question: "Dans quel lieu glauque, sorti en set LEGO 76408, se trouve le QG de l'Ordre du Phénix ?", options: ["Le 12, square Grimmaurd", "La Cabane Hurlante", "Le Manoir Malefoy", "La prison d'Azkaban"], correct: 0, category: "Lieux", explanation: "Le set a un mécanisme génial permettant de faire apparaître la maison entre les deux autres façades moldues !" },
+      { question: "Quelle grande plante tueuse écrase le saule cogneur dans un set classique ?", options: ["Le Filet du Diable", "La Mandragore", "Le Mimbulus mimbletonia", "La Tentacula vénéneuse"], correct: 0, category: "Plantes", explanation: "Le Filet du Diable, redoutable plante qui déteste la lumière." },
+      { question: "Dans le set de la Cabane de Hagrid (75947), quel objet bénéficie d'une brique lumineuse ?", options: ["L'œuf de dragon (Norbert) dans la cheminée", "La lanterne de Hagrid", "La moto de Sirius", "La citrouille d'Halloween"], correct: 0, category: "Sets LEGO", explanation: "Une brique lumineuse éclaire l'œuf de dragon placé dans le foyer de la cheminée." },
+      { question: "Quel échiquier géant a été adapté en set LEGO (76392) ?", options: ["La version magique géante de l'Épreuve de l'École des Sorciers", "L'échiquier de Ron dans la salle commune", "L'échiquier du Ministère", "Il n'y a pas d'échiquier LEGO HP"], correct: 0, category: "Jeux", explanation: "Il reproduit la scène culte du film 1 et permet même de jouer aux échecs pour de vrai." },
+      { question: "Quelle boutique de farces de Pré-au-Lard a été éditée en set LEGO avec son toit enneigé ?", options: ["Zonko", "Weasley Farces", "Honeydukes", "Les Trois Balais"], correct: 0, category: "Lieux", explanation: "Zonko et Honeydukes formaient le set du village de Pré-au-Lard (76388)." },
+      { question: "Dans le set 'La Tour d'Astronomie' (75969), quel célèbre rassemblement a lieu dans les niveaux inférieurs ?", options: ["Le Club de Slug (Professeur Slughorn)", "L'Armée de Dumbledore", "Le bal de Noël", "Le cours de sortilèges"], correct: 0, category: "Sets LEGO", explanation: "On y trouve les sabliers des maisons et la petite fête du professeur Horace Slughorn." },
+      { question: "Quel monstre se cache dans les toilettes des filles (Set 76389, Chambre des Secrets) ?", options: ["Le Basilic", "Un Troll", "Un Épouvantard", "Aragog"], correct: 0, category: "Monstres", explanation: "Le gigantesque serpent vert de Serpentard sort de la bouche de la statue de Salazar." },
+      { question: "Comment est matérialisé le sortilège Patronus de Harry dans les sets récents (ex: 75945) ?", options: ["Un cerf moulé en plastique bleu transparent pailleté", "Une brique lumineuse bleue", "Un simple dôme bleu", "Un cheval blanc"], correct: 0, category: "Pièces LEGO", explanation: "C'est une magnifique pièce moulée en 'Trans-Light Blue' avec des paillettes." },
+      { question: "Dans le Tournoi des Trois Sorciers, qui affronte le Magyar à pointes en LEGO (75946) ?", options: ["Harry Potter", "Viktor Krum", "Cedric Diggory", "Fleur Delacour"], correct: 0, category: "Sets LEGO", explanation: "C'est la redoutable première tâche de Harry pour récupérer l'œuf d'or." },
+      { question: "Quel bus violet à trois étages a eu plusieurs éditions en LEGO (ex: 75957) ?", options: ["Le Magicobus (Knight Bus)", "Le bus de Londres", "L'Express de Poudlard", "Le chariot de Gringotts"], correct: 0, category: "Véhicules", explanation: "Le Magicobus, qui se faufile partout pour secourir les sorciers en détresse." },
+      { question: "Quel grand balai volant de Harry Potter a eu droit à un set collector 18+ ?", options: ["Il n'y a pas de grand balai LEGO HP 18+", "Le Nimbus 2000", "L'Éclair de Feu", "Le Brossdur 5"], correct: 0, category: "Sets 18+", explanation: "A ce jour (2024), il n'y a pas eu de balai volant taille réelle en set LEGO officiel (uniquement dans des micro-constructions ou MOCs de fans)." },
       
-      { question: "Quel est le nom du village natal de Harry Potter, où ses parents ont été tués ?", options: ["Godric's Hollow", "Little Hangleton", "Pré-au-Lard", "Loutry Ste Chaspoule"], correct: 0, category: "Lieux", explanation: "Godric's Hollow, où est également né Godric Gryffondor." },
-      { question: "Quelle est la particularité du plafond de la Grande Salle de Poudlard ?", options: ["Il est ensorcelé pour refléter le ciel à l'extérieur", "Il est invisible", "Il neige constamment", "Il montre le futur"], correct: 0, category: "Lieux", explanation: "Il est magiquement enchanté pour ressembler au ciel étoilé ou nuageux du dehors." },
-      { question: "Comment s'appelle le professeur de Divination qui prédit le retour de Voldemort ?", options: ["Sybille Trelawney", "Aurora Sinistra", "Firenze", "Rolanda Bibine"], correct: 0, category: "Professeurs", explanation: "Sybille Trelawney, qui fait la véritable prophétie concernant Harry et Voldemort." },
-      { question: "Quel est l'anagramme de 'Tom Marvolo Riddle' (en anglais) ?", options: ["I am Lord Voldemort", "Lord of Death", "Immortal Wizard", "The Dark Lord Riddle"], correct: 0, category: "Histoire", explanation: "I am Lord Voldemort (en français : Tom Elvis Jedusor -> Je suis Voldemort)." },
-      { question: "Quelle boule dorée avec des ailes doit être attrapée au Quidditch pour terminer le match ?", options: ["Le Vif d'Or", "Le Souaffle", "Le Cognard", "La Balle de Match"], correct: 0, category: "Quidditch", explanation: "Le Vif d'Or (Golden Snitch). L'attraper rapporte 150 points et met fin au match." },
-      { question: "Qui est le fantôme de la maison Serpentard ?", options: ["Le Baron Sanglant", "Le Moine Gras", "Sir Nicholas", "Peeves"], correct: 0, category: "Personnages", explanation: "Le Baron Sanglant, le seul dont Peeves a peur." },
-      { question: "Quel objet magique permet aux jumeaux Weasley de connaître la position de chacun dans le château ?", options: ["La Carte du Maraudeur", "Le Détecteur de Mensonges", "La Boussole Magique", "L'Œil de Maugrey"], correct: 0, category: "Objets Magiques", explanation: "La Carte du Maraudeur ('Je jure solennellement que mes intentions sont mauvaises')." },
-      { question: "Dans Harry Potter et la Coupe de Feu, quel dragon Harry doit-il affronter ?", options: ["Un Magyar à Pointes", "Un Vert Gallois", "Un Suédois à Museau Court", "Un Boutefeu Chinois"], correct: 0, category: "Créatures", explanation: "Le Magyar à Pointes (Hungarian Horntail), le plus dangereux des quatre." },
-      { question: "Qui est le compositeur de la célèbre musique 'Hedwig's Theme' du premier film ?", options: ["John Williams", "Hans Zimmer", "Alexandre Desplat", "Patrick Doyle"], correct: 0, category: "Films / Acteurs", explanation: "Le légendaire John Williams, qui a composé pour les 3 premiers films." },
-      { question: "Quelle potion liquide et dorée est aussi appelée 'Chance Liquide' ?", options: ["Felix Felicis", "Amortentia", "Polynectar", "Skele-Gro (Pouss-Os)"], correct: 0, category: "Potions", explanation: "Felix Felicis. Harry l'utilise pour obtenir le souvenir de Slughorn." },
-
-      { question: "Quel est le nom de la chouette de Ron Weasley (offerte par Sirius Black) ?", options: ["Coquecigrue (Pigwidgeon)", "Hermès", "Errol", "Hedwige"], correct: 0, category: "Animaux", explanation: "Coquecigrue, un hibou petit-duc minuscule et très excité." },
-      { question: "Quel sortilège permet de repousser un Épouvantard ?", options: ["Riddikulus", "Expecto Patronum", "Spero Patronum", "Protego"], correct: 0, category: "Sortilèges", explanation: "Riddikulus, qui force l'Épouvantard à prendre une forme comique." },
-      { question: "Qui sont les 4 créateurs de la Carte du Maraudeur ?", options: ["Lunard, Queudver, Patmol et Cornedrue", "James, Sirius, Remus et Severus", "Fred, George, Lee et Percy", "Godric, Helga, Rowena et Salazar"], correct: 0, category: "Histoire", explanation: "Lunard (Lupin), Queudver (Pettigrow), Patmol (Black) et Cornedrue (Potter)." },
-      { question: "Dans le Ministère de la Magie, comment s'appelle le département top-secret où travaillent les Langues-de-Plomb ?", options: ["Le Département des Mystères", "Le Département de la Justice Magique", "Le Bureau des Aurors", "Le Service des Détournements"], correct: 0, category: "Lieux", explanation: "Le Département des Mystères, où sont stockées les Prophéties." },
-      { question: "Qui est le loup-garou féroce qui mord Remus Lupin (et Bill Weasley) ?", options: ["Fenrir Greyback", "Lucius Malefoy", "Peter Pettigrow", "Amycus Carrow"], correct: 0, category: "Personnages", explanation: "Fenrir Greyback, un loup-garou sadique au service de Voldemort." },
-      { question: "Comment s'appelle l'arbre qui détruit la voiture volante des Weasley ?", options: ["Le Saule Cogneur", "Le Chêne Frappeur", "L'Orme Assommeur", "L'Arbre Mortel"], correct: 0, category: "Lieux / Plantes", explanation: "Le Saule Cogneur (Whomping Willow), planté spécialement pour protéger l'accès à la Cabane Hurlante pour Lupin." },
-      { question: "Quel ingrédient est utilisé par Voldemort pour ressusciter dans le cimetière (outre l'os de son père et la chair de son serviteur) ?", options: ["Le sang de son ennemi (Harry)", "Les larmes d'un phénix", "Le venin de son serpent", "L'âme d'un Moldu"], correct: 0, category: "Histoire", explanation: "Le sang de son ennemi (pris de force). Cela permet à Voldemort de contourner la protection magique de Lily." },
-      { question: "Quel acteur a remplacé Richard Harris dans le rôle de Dumbledore à partir du 3e film ?", options: ["Michael Gambon", "Ian McKellen", "Christopher Lee", "Jude Law"], correct: 0, category: "Films / Acteurs", explanation: "Michael Gambon a pris le rôle suite au décès de Richard Harris après La Chambre des Secrets." },
-      { question: "Quelle plante magique permet à Harry de respirer sous l'eau lors de la 2e tâche ?", options: ["La Branchiflore (Gillyweed)", "La Tentacula vénéneuse", "La Potion d'Oxygène", "L'Aconit"], correct: 0, category: "Plantes", explanation: "La Branchiflore, qui lui donne des branchies et des mains palmées (donnée par Dobby dans le livre, par Neville dans le film)." },
-      { question: "Dans le monde de LEGO Harry Potter, le set 76392 permet de jouer à quel jeu mythique du premier film ?", options: ["Le Jeu d'Échecs Version Sorcier", "Les Bavboules", "La Bataille Explosive", "Le Quidditch de Table"], correct: 0, category: "Sets LEGO", explanation: "Le Jeu d'échecs de Poudlard (Hogwarts Wizard's Chess), avec de superbes pièces noires et blanches." }
+      // --- UNIVERS & FILMS HARRY POTTER (36-100) ---
+      { question: "Quel est le nom complet du directeur de Poudlard (sans compter ses nombreux prénoms intermédiaires) ?", options: ["Albus Dumbledore", "Armando Dippet", "Phineas Nigellus Black", "Severus Rogue"], correct: 0, category: "Personnages", explanation: "Albus Perceval Wulfric Brian Dumbledore." },
+      { question: "Quels sont les noms des quatre fondateurs de Poudlard ?", options: ["Godric, Helga, Rowena, Salazar", "Arthur, Molly, Bill, Charlie", "James, Sirius, Remus, Peter", "Albus, Minerva, Severus, Filius"], correct: 0, category: "Histoire", explanation: "Gryffondor, Poufsouffle, Serdaigle et Serpentard." },
+      { question: "Que fait le sortilège 'Expelliarmus' ?", options: ["Il désarme l'adversaire", "Il fait de la lumière", "Il tue instantanément", "Il ouvre les portes"], correct: 0, category: "Sortilèges", explanation: "C'est le sortilège de désarmement, devenu la signature de Harry Potter." },
+      { question: "Quelle potion permet de prendre l'apparence physique de quelqu'un d'autre ?", options: ["Le Polynectar", "Le Felix Felicis", "Le Veritaserum", "L'Amortentia"], correct: 0, category: "Potions", explanation: "Le Polynectar prend un mois à préparer et a le goût d'un chou trop cuit (selon les cas)." },
+      { question: "Sur quelle voie de la gare de King's Cross faut-il se rendre pour prendre le Poudlard Express ?", options: ["La voie 9 ¾", "La voie 7 ½", "La voie 10 ¼", "La voie 8"], correct: 0, category: "Lieux", explanation: "Il faut courir tout droit dans le mur entre les quais 9 et 10." },
+      { question: "Qui est le Prince de Sang-Mêlé ?", options: ["Severus Rogue", "Tom Jedusor", "Harry Potter", "Albus Dumbledore"], correct: 0, category: "Personnages", explanation: "Severus Rogue a utilisé le nom de jeune fille de sa mère (Prince) et son statut de Sang-Mêlé." },
+      { question: "Quel objet magique Hermione utilise-t-elle en troisième année pour suivre tous ses cours ?", options: ["Un Retourneur de Temps", "Une Cape d'Invisibilité", "Un Scrutoscope", "Une pierre de résurrection"], correct: 0, category: "Objets Magiques", explanation: "Accordé par le Ministère de la Magie grâce au professeur McGonagall." },
+      { question: "Comment s'appelle l'elfe de maison dévoué à la famille Malefoy ?", options: ["Dobby", "Kreattur", "Winky", "Hokey"], correct: 0, category: "Créatures", explanation: "Dobby, que Harry libérera grâce à une ruse avec une chaussette." },
+      { question: "Quel animal est le Patronus de Harry Potter ?", options: ["Un cerf", "Une loutre", "Un chien (Jack Russell)", "Un lièvre"], correct: 0, category: "Sortilèges", explanation: "Cornedrue, un cerf, comme la forme Animagus de son père James." },
+      { question: "Quels sont les trois objets composant les Reliques de la Mort ?", options: ["La Baguette de Sureau, la Pierre de Résurrection, la Cape d'Invisibilité", "L'Épée de Gryffondor, la Coupe de Poufsouffle, le Diadème de Serdaigle", "La Coupe de Feu, la Carte du Maraudeur, le Retourneur de Temps", "La pierre philosophale, le miroir du Riséd, l'Armoire à disparaître"], correct: 0, category: "Lore", explanation: "Le conte des Trois Frères (Peverell) décrit ces trois artefacts légendaires." },
+      { question: "Qui a écrit le journal intime qui manipule Ginny Weasley dans la Chambre des Secrets ?", options: ["Tom Elvis Jedusor (Voldemort)", "Lucius Malefoy", "Gilderoy Lockhart", "Salazar Serpentard"], correct: 0, category: "Objets Magiques", explanation: "C'est le tout premier Horcruxe de Voldemort découvert par Harry." },
+      { question: "Quel poste Harry Potter occupe-t-il dans l'équipe de Quidditch de Gryffondor ?", options: ["Attrapeur", "Poursuiveur", "Gardien", "Batteur"], correct: 0, category: "Quidditch", explanation: "Il doit attraper le Vif d'or pour faire gagner 150 points et mettre fin au match." },
+      { question: "Comment s'appelle l'hippogriffe de Hagrid condamné à mort au Ministère (et sauvé) ?", options: ["Buck (Buckbeak)", "Crockdur", "Touffu", "Norbert"], correct: 0, category: "Créatures", explanation: "Harry et Hermione le sauvent avec le Retourneur de Temps pour qu'il emporte Sirius Black." },
+      { question: "Quel sortilège produit de la lumière au bout de la baguette ?", options: ["Lumos", "Nox", "Incendio", "Protego"], correct: 0, category: "Sortilèges", explanation: "Et le sortilège 'Nox' permet de l'éteindre." },
+      { question: "Quelle prison effroyable est gardée par les Détraqueurs ?", options: ["Azkaban", "Nurmengard", "La Tour de Londres", "Azkabath"], correct: 0, category: "Lieux", explanation: "Située sur une île perdue en pleine mer du Nord, réputée infranchissable (avant Sirius)." },
+      { question: "Quel est l'un des mots de passe du bureau de Dumbledore ?", options: ["Sorbet Citron (Sherbet Lemon)", "Chocogrenouille", "Dragées surprises", "Patacitrouille"], correct: 0, category: "Poudlard", explanation: "Dumbledore adore les bonbons moldus, particulièrement les Sorbets Citron." },
+      { question: "Quel arbre très violent fracasse la voiture volante des Weasley (la Ford Anglia) ?", options: ["Le Saule Cogneur", "Le Chêne de la Forêt Interdite", "Le Filet du Diable", "La Mandragore géante"], correct: 0, category: "Plantes", explanation: "Le Saule Cogneur a été planté pour protéger l'entrée du passage vers la Cabane Hurlante." },
+      { question: "Quelle matière enseigne le professeur McGonagall ?", options: ["La Métamorphose", "Les Potions", "L'Histoire de la Magie", "Les Sortilèges"], correct: 0, category: "Cours", explanation: "C'est une experte en métamorphose, et elle-même un Animagus (chat tigré)." },
+      { question: "Qui est le fantôme de la maison Serpentard ?", options: ["Le Baron Sanglant", "Sir Nicholas (Nick Quasi-Sans-Tête)", "Le Moine Gras", "La Dame Grise (Helena Serdaigle)"], correct: 0, category: "Fantômes", explanation: "Couverts de taches de sang argentées, même Peeves le craint." },
+      { question: "Que doit-on dire pour fermer la Carte du Maraudeur et effacer ses traces ?", options: ["Méfaits accomplis (Mischief managed)", "Je jure solennellement que mes intentions sont mauvaises", "Nox", "Evanesco"], correct: 0, category: "Objets Magiques", explanation: "La phrase complète permet de rendre le parchemin vierge pour le cacher à Rogue." },
+      { question: "Quel métier exerce Arthur Weasley au Ministère de la Magie (au début) ?", options: ["Service du Détournement de l'Artisanat Moldu", "Auror", "Langue-de-Plomb", "Ministre de la Magie"], correct: 0, category: "Ministère", explanation: "Il est fasciné par les prises électriques et les canards en plastique moldus." },
+      { question: "Comment s'appelle le chat au visage écrasé d'Hermione Granger ?", options: ["Pattenrond", "Miss Teigne", "Croûtard", "Griselourde"], correct: 0, category: "Créatures", explanation: "Pattenrond (Crookshanks), qui a du sang de Fléreur et est très intelligent." },
+      { question: "Qui a dénoncé les parents de Harry à Voldemort ?", options: ["Peter Pettigrow (Queudver)", "Sirius Black", "Severus Rogue", "Lucius Malefoy"], correct: 0, category: "Histoire", explanation: "Peter était le Gardien du Secret des Potter et les a trahis par lâcheté." },
+      { question: "Quelle est la particularité du plafond de la Grande Salle ?", options: ["Il est ensorcelé pour refléter le ciel à l'extérieur", "Il est fait de diamants", "Il fait pleuvoir de la vraie neige", "Il lévite au-dessus du château"], correct: 0, category: "Poudlard", explanation: "Une magnifique illusion mentionnée par Hermione dès sa première apparition." },
+      { question: "Dans le premier tome, quel troll s'introduit dans le château le soir de Halloween ?", options: ["Un troll des montagnes", "Un troll des cavernes", "Un troll des forêts", "Un troll de glace"], correct: 0, category: "Créatures", explanation: "Relâché par le professeur Quirrell pour faire diversion vers la pierre philosophale." },
+      { question: "Quel sort impardonnable provoque une douleur insoutenable (Sortilège Doloris) ?", options: ["Endoloris", "Impero", "Avada Kedavra", "Sectumsempra"], correct: 0, category: "Sortilèges", explanation: "L'un des trois sortilèges impardonnables qui envoie directement à Azkaban." },
+      { question: "Quel bois compose la baguette de Voldemort (et celle de Harry) ?", options: ["L'if (et le houx pour Harry)", "Le chêne", "Le saule", "Le sureau (à l'origine)"], correct: 0, category: "Baguettes", explanation: "La baguette de Voldemort est en bois d'if, celle de Harry en houx, les deux partagent le même cœur de plume de phénix." },
+      { question: "Quelle sucrerie magique prend soudainement vie dans les trains ?", options: ["La Chocogrenouille", "Le Suçacide", "Les Patacitrouilles", "La Plume en sucre"], correct: 0, category: "Nourriture", explanation: "Elles ont 'juste un sortilège' pour le premier saut." },
+      { question: "Quel est le nom du village 100% sorcier près de Poudlard ?", options: ["Pré-au-Lard (Hogsmeade)", "Godric's Hollow", "Chemin de Traverse", "Loutry Ste Chaspoule"], correct: 0, category: "Lieux", explanation: "Le seul village de Grande-Bretagne habité uniquement par des sorciers." },
+      { question: "Que donne Hagrid à Harry à la fin de sa première année ?", options: ["Un album photo de ses parents", "Une chouette", "Un gâteau écrasé", "Un Nimbus 2000"], correct: 0, category: "Histoire", explanation: "Un cadeau très émouvant rassemblant des photos mouvantes de James et Lily." },
+      { question: "Qui est le directeur de la maison Serdaigle ?", options: ["Professeur Flitwick", "Professeur Chourave", "Professeur McGonagall", "Professeur Trelawney"], correct: 0, category: "Professeurs", explanation: "Filius Flitwick, le maître des sortilèges (et champion de duel dans sa jeunesse)." },
+      { question: "Comment s'appelle l'araignée géante de Hagrid qui vit dans la Forêt Interdite ?", options: ["Aragog", "Grawp", "Mosag", "Touffu"], correct: 0, category: "Créatures", explanation: "Une Acromantule élevée en cachette par Hagrid lorsqu'il était élève." },
+      { question: "Quel sortilège lance Hermione pour réparer les lunettes de Harry dans l'Express ?", options: ["Oculus Reparo", "Lumos Solem", "Tergeo", "Récurvite"], correct: 0, category: "Sortilèges", explanation: "C'est l'une de ses toutes premières démonstrations de magie (dans les films)." },
+      { question: "Dans le tome 5, comment s'appelle la société secrète des élèves pour apprendre à se battre ?", options: ["L'Armée de Dumbledore", "L'Ordre du Phénix", "Le Club de Duel", "La Brigade Inquisitoriale"], correct: 0, category: "Histoire", explanation: "Créée par Harry, Ron et Hermione pour contrer les règles de Dolores Ombrage." },
+      { question: "Quel objet magique permet à Dumbledore de revoir ses souvenirs dans une bassine ?", options: ["La Pensine", "Le miroir du Riséd", "L'Œil de Maugrey", "Un Deluminateur"], correct: 0, category: "Objets Magiques", explanation: "Une Pensine (Pensieve), indispensable pour explorer les souvenirs sur le passé de Voldemort." },
+      { question: "Comment neutralise-t-on un Épouvantard (Boggart) ?", options: ["En utilisant le sort Riddikulus et en riant", "En utilisant le sort Expecto Patronum", "En fermant les yeux", "En le brûlant avec Incendio"], correct: 0, category: "Monstres", explanation: "Le rire est la seule arme contre cette créature qui prend la forme de nos pires peurs." },
+      { question: "Quel est le nom de jeune fille de Molly Weasley ?", options: ["Molly Prewett", "Molly Black", "Molly Lovegood", "Molly Fortescue"], correct: 0, category: "Personnages", explanation: "La famille Prewett (Gideon et Fabian) a été décimée par des Mangemorts pendant la première guerre." },
+      { question: "Quel métier Rémus Lupin exerce-t-il après avoir quitté Poudlard ?", options: ["Il a du mal à trouver un emploi à cause de sa lycanthropie", "Auror", "Employé chez Fleury et Bott", "Écrivain"], correct: 0, category: "Personnages", explanation: "Les loups-garous sont rejetés par la société magique (lois de Dolores Ombrage)." },
+      { question: "Comment s'appelle le journal de propagande qui critique souvent Harry Potter ?", options: ["La Gazette du Sorcier (Daily Prophet)", "Le Chicaneur", "Sorcière Hebdo", "Le Cri de la Mandragore"], correct: 0, category: "Presse", explanation: "Le quotidien magique principal, souvent influencé par le Ministère de la Magie." },
+      { question: "Quel est le mot de passe de la carte du maraudeur ?", options: ["Je jure solennellement que mes intentions sont mauvaises", "Alohomora", "Caput Draconis", "Mimbulus Mimbletonia"], correct: 0, category: "Objets Magiques", explanation: "Inventé par Lunard, Queudver, Patmol et Cornedrue." },
+      { question: "Dans le tome 4, qui est le 4ème champion inattendu du Tournoi des Trois Sorciers ?", options: ["Harry Potter", "Cedric Diggory", "Neville Londubat", "Fred Weasley"], correct: 0, category: "Histoire", explanation: "Son nom est sorti de la Coupe de Feu alors qu'il n'avait pas l'âge requis (Croupton Jr l'a piégé)." },
+      { question: "Quel dragon Harry doit-il affronter lors de la première tâche du Tournoi ?", options: ["Le Magyar à pointes", "Le Suédois à museau court", "Le Vert Gallois", "Le Boutefeu Chinois"], correct: 0, category: "Créatures", explanation: "C'est la race de dragon la plus féroce et la plus agressive." },
+      { question: "Comment s'appelle le village où vivent les parents de Harry avant leur assassinat ?", options: ["Godric's Hollow", "Pré-au-Lard", "Little Hangleton", "Loutry Ste Chaspoule"], correct: 0, category: "Lieux", explanation: "C'est aussi le village natal de Godric Gryffondor et de la famille Dumbledore." },
+      { question: "Quelle est l'adresse de l'oncle Vernon et de la tante Pétunia ?", options: ["4, Privet Drive, Little Whinging", "12, square Grimmaurd, Londres", "L'Impasse du Tisseur", "Le Terrier, Devon"], correct: 0, category: "Lieux", explanation: "Là où Harry vit dans le placard sous l'escalier." },
+      { question: "Qui est le demi-géant de Grawp ?", options: ["C'est le demi-frère de Hagrid", "C'est Olympe Maxime", "C'est un professeur de Poudlard", "C'est un gobelin mutant"], correct: 0, category: "Créatures", explanation: "Hagrid le ramène de sa mission chez les géants et le cache dans la Forêt Interdite." },
+      { question: "Quel est le nom du magasin de baguettes magiques sur le Chemin de Traverse ?", options: ["Ollivander", "Barjow et Beurk", "Madame Guipure", "Magasin d'accessoires de Quidditch"], correct: 0, category: "Lieux", explanation: "Fabricants de baguettes d'excellence depuis 382 av. J.-C." },
+      { question: "Quel sortilège permet de repousser les Détraqueurs ?", options: ["Expecto Patronum (Spero Patronum)", "Riddikulus", "Protego", "Stupefix"], correct: 0, category: "Sortilèges", explanation: "Un sortilège de magie blanche très avancé basé sur un souvenir heureux." },
+      { question: "Comment s'appelle l'oiseau très rare (et snob) de Voldemort, bien qu'il ait plutôt un serpent ?", options: ["Voldemort n'a pas d'oiseau, il a un serpent (Nagini)", "Un Phénix noir", "Un Augurey", "Une chouette effraie"], correct: 0, category: "Piège", explanation: "Voldemort est très attaché à Nagini, son serpent géant (et Horcruxe)." },
+      { question: "Quelle est la forme de l'Épouvantard (Boggart) de Neville Londubat ?", options: ["Le professeur Rogue", "Un Détraqueur", "Une pleine lune", "Un serpent géant"], correct: 0, category: "Monstres", explanation: "Il le transforme ensuite de façon comique en l'habillant avec les vêtements de sa grand-mère." },
+      { question: "Qui enseigne la divination à Poudlard ?", options: ["Professeur Sibylle Trelawney", "Professeur Sinistra", "Professeur Gobe-Planche", "Professeur Vector"], correct: 0, category: "Professeurs", explanation: "C'est elle qui a énoncé la prophétie concernant Harry et Voldemort." },
+      { question: "Qu'est-ce qu'un Horcruxe ?", options: ["Un objet contenant une partie de l'âme d'un sorcier sombre", "Un sortilège de guérison", "Une plante vénéneuse", "Un animal de compagnie maléfique"], correct: 0, category: "Magie Noire", explanation: "Voldemort a déchiré son âme en 7 morceaux pour atteindre l'immortalité." },
+      { question: "Lequel de ces objets N'EST PAS un Horcruxe de Voldemort ?", options: ["L'Épée de Gryffondor", "Le Diadème de Serdaigle", "La Coupe de Poufsouffle", "Le journal intime"], correct: 0, category: "Horcruxes", explanation: "L'Épée de Gryffondor ne prend que ce qui la renforce (comme le venin de Basilic), elle a servi à DÉTRUIRE les Horcruxes." },
+      { question: "Dans quel cours apprend-on à rempoter des Mandragores ?", options: ["Botanique (avec le Pr. Chourave)", "Potions", "Soins aux Créatures Magiques", "Sortilèges"], correct: 0, category: "Cours", explanation: "Le cri des jeunes Mandragores peut étourdir, celui des adultes est mortel." },
+      { question: "Quelle actrice britannique de légende incarne Minerva McGonagall ?", options: ["Maggie Smith", "Emma Thompson", "Helena Bonham Carter", "Julie Walters"], correct: 0, category: "Acteurs", explanation: "La formidable et regrettée Dame Maggie Smith." },
+      { question: "Quel acteur interprète Severus Rogue dans les films ?", options: ["Alan Rickman", "Gary Oldman", "Ralph Fiennes", "Jason Isaacs"], correct: 0, category: "Acteurs", explanation: "Alan Rickman a su donner une profondeur tragique et inoubliable au maître des potions." },
+      { question: "Quelle boisson non-alcoolisée (et très réconfortante) boivent souvent les sorciers à Pré-au-Lard ?", options: ["La Bièraubeurre (Butterbeer)", "Le Jus de Citrouille", "L'Hydromel", "Le Whisky Pur Feu"], correct: 0, category: "Nourriture", explanation: "Servie aux Trois Balais par Madame Rosmerta, chaude ou froide." },
+      { question: "Quel est le nom de la rue très sombre dédiée à la magie noire ?", options: ["L'Allée des Embrumes (Knockturn Alley)", "Le Chemin de Traverse", "Sainte-Mangouste", "Le square Grimmaurd"], correct: 0, category: "Lieux", explanation: "L'Allée des Embrumes abrite des boutiques comme Barjow et Beurk." },
+      { question: "Comment appelle-t-on un sorcier qui n'a pas de pouvoirs magiques mais né de parents sorciers ?", options: ["Un Cracmol (Squib)", "Un Moldu (Muggle)", "Un Sang-de-Bourbe", "Un Animagus"], correct: 0, category: "Lore", explanation: "Comme Argus Rusard (le concierge) ou Arabella Figg." },
+      { question: "Quels sont les mots magiques pour utiliser une poudre de cheminette (Floo Powder) ?", options: ["Il faut prononcer sa destination TRÈS CLAIREMENT", "Alohomora", "Incendio", "Cheminette Téléporta"], correct: 0, category: "Magie", explanation: "Harry a mal articulé 'Chemin de Traverse' et s'est retrouvé dans l'Allée des Embrumes." },
+      { question: "Dans la saga, qui a dit : 'Après tout ce temps ?' et l'autre répond 'Toujours' ?", options: ["Dumbledore demande à Rogue (à propos de Lily)", "Harry demande à Ron", "Sirius demande à Remus", "Voldemort demande à Rogue"], correct: 0, category: "Citations", explanation: "La réplique culte 'Always' (Toujours) qui révèle l'amour éternel de Rogue pour Lily Potter." }
     ];
 
     /**
-     * MOTEUR AUDIO (STYLE MAGIQUE)
+     * MOTEUR AUDIO (Sons Magiques Synthétisés - Pas de fichiers externes)
      */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.enabled = true;
       }
-
       initCtx() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            this.ctx = new AudioContext();
-          }
+          if (AudioContext) this.ctx = new AudioContext();
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
       }
-
-      playSpellCorrect() {
+      
+      // Bonne réponse: Scintillement magique (Sortilège réussi)
+      playMagicSparkle() { 
         if (!this.enabled) return;
         this.initCtx();
         if (!this.ctx) return;
+        
+        const now = this.ctx.currentTime;
+        const notes = [880, 1108.73, 1318.51, 1760]; // Arpège A maj
+        
+        notes.forEach((freq, index) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + index * 0.08);
+          
+          gain.gain.setValueAtTime(0, now + index * 0.08);
+          gain.gain.linearRampToValueAtTime(0.2, now + index * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.5);
+          
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          osc.start(now + index * 0.08);
+          osc.stop(now + index * 0.08 + 0.5);
+        });
+      }
 
+      // Mauvaise réponse: Bruit de chaudron / Sort raté
+      playCauldronDrop() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        // Bruit de sortilège féérique (scintillement)
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1500, this.ctx.currentTime + 0.2);
-        osc.frequency.linearRampToValueAtTime(800, this.ctx.currentTime + 0.5);
-
+        osc.type = 'sawtooth';
+        
+        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.3);
+        
         gain.gain.setValueAtTime(0, this.ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.3, this.ctx.currentTime + 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.5);
-
+        gain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+        
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.5);
-      }
-
-      playSpellWrong() {
-        if (!this.enabled) return;
-        this.initCtx();
-        if (!this.ctx) return;
-
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        // Bruit de chaudron / sort raté
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.3);
-
-        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
-
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
+        
         osc.start();
         osc.stop(this.ctx.currentTime + 0.3);
       }
 
-      playTick() {
+      // Joker 50/50: Son cristallin de divination (Boule de cristal)
+      playCrystalBall() { 
         if (!this.enabled) return;
         this.initCtx();
         if (!this.ctx) return;
 
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.type = 'sine';
+        
+        let t = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(600, t);
+        osc.frequency.linearRampToValueAtTime(1200, t + 0.5);
 
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.2);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+        
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(t + 0.8);
+      }
+
+      // Timer (Tic-tac de l'horloge / Sablier)
+      playTick() {
+        if (!this.enabled) return;
+        this.initCtx();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
         gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
-
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
@@ -604,27 +616,30 @@
       constructor() {
         this.questionsPool = [...INITIAL_QUESTIONS];
         this.sound = new SoundEngine();
-
+        
         this.gameMode = 'solo';
         this.activeQuestions = [];
         this.currentIndex = 0;
         this.totalQuestionsCount = 10;
-
+        
         this.soloScore = 0;
         this.teamAScore = 0;
         this.teamBScore = 0;
         this.currentTurn = 'teamA';
         
-        this.playerName = 'Agent';
+        this.playerName = 'Harry Potter';
         this.teamAName = 'Gryffondor';
-        this.teamBName = 'Serpentard';
+        this.teamBName = "Serpentard";
         this.pendingMode = 'solo';
-
+        
         this.timerEnabled = true;
         this.timerSeconds = 15;
         this.timerInterval = null;
         this.hasAnswered = false;
-
+        
+        // JOKER 50/50: Une utilisation par équipe (ou 1 en solo)
+        this.jokers = { solo: true, teamA: true, teamB: true };
+        
         this.initUI();
       }
 
@@ -639,7 +654,7 @@
         if (this.sound.enabled) {
           iconOn.classList.remove('hidden');
           iconOff.classList.add('hidden');
-          this.sound.playTick();
+          this.sound.playMagicSparkle();
         } else {
           iconOn.classList.add('hidden');
           iconOff.classList.remove('hidden');
@@ -652,14 +667,12 @@
         document.getElementById('screen-quiz').classList.add('hidden');
         document.getElementById('screen-results').classList.add('hidden');
         document.getElementById('screen-leaderboard').classList.add('hidden');
-
         document.getElementById(`screen-${screenId}`).classList.remove('hidden');
       }
 
       openNameSetup(mode) {
         this.pendingMode = mode;
         document.getElementById('nameSetupModal').classList.remove('hidden');
-        
         if (mode === 'solo') {
           document.getElementById('soloNameInput').classList.remove('hidden');
           document.getElementById('duelNameInputs').classList.add('hidden');
@@ -685,7 +698,7 @@
       startWithNames(e) {
         e.preventDefault();
         if (this.pendingMode === 'solo') {
-          this.playerName = document.getElementById('participantName').value.trim() || 'Élève';
+          this.playerName = document.getElementById('participantName').value.trim() || 'Sorcier Inconnu';
         } else {
           this.teamAName = document.getElementById('team1Name').value.trim() || 'Gryffondor';
           this.teamBName = document.getElementById('team2Name').value.trim() || 'Serpentard';
@@ -698,8 +711,9 @@
         this.sound.initCtx();
         this.gameMode = mode;
         this.timerEnabled = document.getElementById('timerEnabledCheck').checked;
-
         this.totalQuestionsCount = 10;
+        
+        this.jokers = { solo: true, teamA: true, teamB: true };
 
         const shuffled = [...this.questionsPool].sort(() => 0.5 - Math.random());
         const targetCount = Math.min(this.totalQuestionsCount, shuffled.length);
@@ -722,15 +736,18 @@
           document.getElementById('duelHeaderWidget').classList.add('hidden');
           document.getElementById('soloHeaderWidget').classList.remove('hidden');
           document.getElementById('teamTurnIndicator').classList.add('hidden');
-          document.getElementById('uiSoloName').innerText = this.playerName.toUpperCase();
+          document.getElementById('uiSoloName').innerText = this.playerName;
           document.getElementById('soloScore').innerText = '0';
         }
 
         const timerContainer = document.getElementById('timerContainer');
         if (this.timerEnabled) {
-          timerContainer.classList.remove('hidden');
+            timerContainer.classList.remove('hidden');
+            // Force re-affichage du timer box si masqué
+            document.getElementById('timerBox').classList.remove('hidden');
         } else {
-          timerContainer.classList.add('hidden');
+            // Masquer uniquement la box de temps, garder le container pour le joker
+            document.getElementById('timerBox').classList.add('hidden'); 
         }
 
         this.showScreen('quiz');
@@ -744,36 +761,86 @@
       updateDuelHeader() {
         document.getElementById('teamAScore').innerText = this.teamAScore;
         document.getElementById('teamBScore').innerText = this.teamBScore;
-
         const teamABox = document.getElementById('teamAStatus');
         const teamBBox = document.getElementById('teamBStatus');
         const turnText = document.getElementById('teamTurnText');
 
         if (this.currentTurn === 'teamA') {
-          teamABox.className = "px-3 py-1.5 rounded-lg border border-red-500 bg-red-900/60 shadow-lg shadow-red-500/20";
-          teamBBox.className = "px-3 py-1.5 rounded-lg border border-slate-600 bg-slate-800/60 opacity-60";
-          turnText.innerHTML = `Au tour de : <span class="text-red-500 font-black">${this.teamAName.toUpperCase()}</span> !`;
+          teamABox.className = "px-4 py-2 rounded border-2 border-red-500 bg-red-900/50 text-red-200 shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-105 transition-all";
+          teamBBox.className = "px-4 py-2 rounded border-2 border-slate-700 bg-slate-900 text-slate-500 opacity-60 scale-95 transition-all";
+          turnText.innerHTML = `Au tour de <span class="text-amber-400 uppercase">${this.teamAName}</span> !`;
         } else {
-          teamBBox.className = "px-3 py-1.5 rounded-lg border border-green-500 bg-green-900/60 shadow-lg shadow-green-500/20";
-          teamABox.className = "px-3 py-1.5 rounded-lg border border-slate-600 bg-slate-800/60 opacity-60";
-          turnText.innerHTML = `Au tour de : <span class="text-green-500 font-black">${this.teamBName.toUpperCase()}</span> !`;
+          teamBBox.className = "px-4 py-2 rounded border-2 border-green-500 bg-green-900/50 text-green-200 shadow-[0_0_15px_rgba(34,197,94,0.5)] scale-105 transition-all";
+          teamABox.className = "px-4 py-2 rounded border-2 border-slate-700 bg-slate-900 text-slate-500 opacity-60 scale-95 transition-all";
+          turnText.innerHTML = `Au tour de <span class="text-slate-300 uppercase">${this.teamBName}</span> !`;
         }
+      }
+
+      /**
+       * GESTION DU JOKER 50/50
+       */
+      updateJokerUI() {
+        const btn = document.getElementById('jokerBtn');
+        let available = false;
+        
+        if (this.gameMode === 'solo') {
+          available = this.jokers.solo;
+        } else {
+          available = (this.currentTurn === 'teamA') ? this.jokers.teamA : this.jokers.teamB;
+        }
+
+        if (available && !this.hasAnswered) {
+          btn.disabled = false;
+          btn.className = "flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-purple-700 to-indigo-800 hover:from-purple-600 hover:to-indigo-700 text-white font-bold text-sm border-2 border-purple-400 hp-button shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all";
+        } else {
+          btn.disabled = true;
+          btn.className = "flex items-center justify-center px-4 py-2 rounded-lg bg-slate-800 text-slate-500 font-bold text-sm border-2 border-slate-700 cursor-not-allowed grayscale opacity-50";
+        }
+      }
+
+      useJoker5050() {
+        if (this.hasAnswered) return;
+        
+        let available = false;
+        if (this.gameMode === 'solo' && this.jokers.solo) {
+          this.jokers.solo = false; available = true;
+        } else if (this.gameMode === 'duel') {
+          if (this.currentTurn === 'teamA' && this.jokers.teamA) {
+            this.jokers.teamA = false; available = true;
+          } else if (this.currentTurn === 'teamB' && this.jokers.teamB) {
+            this.jokers.teamB = false; available = true;
+          }
+        }
+
+        if (!available) return;
+
+        this.sound.playCrystalBall(); // Son boule de cristal
+        this.updateJokerUI(); // Désactive le bouton
+
+        // On masque 2 mauvaises réponses
+        const q = this.activeQuestions[this.currentIndex];
+        const correctText = q.options[q.correct];
+        const buttons = Array.from(document.querySelectorAll('#optionsGrid button'));
+        
+        const wrongButtons = buttons.filter(btn => btn.querySelector('.text-option').innerText !== correctText);
+        
+        // Mélanger les mauvais boutons et masquer les deux premiers
+        wrongButtons.sort(() => 0.5 - Math.random());
+        wrongButtons[0].style.opacity = '0';
+        wrongButtons[0].style.pointerEvents = 'none';
+        wrongButtons[1].style.opacity = '0';
+        wrongButtons[1].style.pointerEvents = 'none';
       }
 
       loadQuestion() {
         this.hasAnswered = false;
         clearInterval(this.timerInterval);
+        
+        this.updateJokerUI(); // Vérifie si le Joker est dispo
 
         const q = this.activeQuestions[this.currentIndex];
-        document.getElementById('currentRoundBadge').innerText = `Q${this.currentIndex + 1} / ${this.activeQuestions.length}`;
-        document.getElementById('categoryBadge').innerText = q.category || 'Monde Magique';
-
-        const catBadge = document.getElementById('categoryBadge');
-        if (q.category && q.category.includes('LEGO')) {
-          catBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-md bg-yellow-600 text-slate-900 shadow shadow-yellow-500/30';
-        } else {
-          catBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-md bg-indigo-600 text-white shadow shadow-indigo-500/30';
-        }
+        document.getElementById('currentRoundBadge').innerText = `Q${this.currentIndex + 1}/${this.activeQuestions.length}`;
+        document.getElementById('categoryBadge').innerText = q.category || 'Poudlard';
 
         document.getElementById('questionText').innerText = q.question;
         document.getElementById('feedbackContainer').classList.add('hidden');
@@ -781,51 +848,42 @@
         const grid = document.getElementById('optionsGrid');
         grid.innerHTML = '';
 
-        const choices = q.options.map((opt, idx) => ({
-          text: opt,
-          isCorrect: idx === q.correct
-        }));
-
+        const choices = q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct }));
         choices.sort(() => 0.5 - Math.random());
 
         const letters = ['A', 'B', 'C', 'D'];
         choices.forEach((choice, i) => {
           const btn = document.createElement('button');
-          btn.className = `option-btn group w-full p-4 rounded-xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-600 hover:border-yellow-400 text-left flex items-center justify-between shadow-md focus:outline-none`;
+          btn.className = `group w-full p-4 md:p-5 rounded-xl bg-slate-900 border-2 border-slate-700 hover:border-amber-500 hover:bg-slate-800 text-left flex items-center justify-between shadow-md focus:outline-none transition-all`;
           btn.innerHTML = `
-            <div class="flex items-center gap-3.5">
-              <span class="w-8 h-8 rounded-lg bg-slate-900 group-hover:bg-yellow-500 group-hover:text-slate-900 flex items-center justify-center font-magic font-bold text-sm text-yellow-500 border border-slate-700 transition">
+            <div class="flex items-center gap-4">
+              <span class="w-10 h-10 rounded-full bg-slate-950 flex items-center justify-center font-magic text-xl text-amber-500 border border-slate-700 group-hover:bg-amber-500 group-hover:text-slate-900 transition-colors shadow-inner shrink-0">
                 ${letters[i] || '•'}
               </span>
-              <span class="text-sm md:text-base font-semibold text-slate-200">${choice.text}</span>
+              <span class="text-option text-sm md:text-base font-bold text-slate-200">${choice.text}</span>
             </div>
-            <div class="option-icon opacity-0 transition"></div>
+            <div class="option-icon opacity-0 transition-opacity shrink-0"></div>
           `;
-
           btn.onclick = () => this.handleAnswer(choice.isCorrect, btn, choices);
           grid.appendChild(btn);
         });
 
-        if (this.timerEnabled) {
-          this.startTimer();
-        }
+        if (this.timerEnabled) this.startTimer();
       }
 
       startTimer() {
         this.timerSeconds = 15;
         const box = document.getElementById('timerBox');
         box.innerText = this.timerSeconds;
-        box.className = "w-11 h-11 rounded-full bg-slate-900 border-2 border-yellow-500 flex items-center justify-center font-black text-yellow-500 text-lg transition-colors shadow-[0_0_10px_rgba(234,179,8,0.3)]";
+        box.className = "w-12 h-12 rounded-full bg-slate-950 border-4 border-amber-500 flex items-center justify-center text-amber-500 text-2xl shadow-inner transition-colors font-magic";
 
         this.timerInterval = setInterval(() => {
           this.timerSeconds--;
           box.innerText = this.timerSeconds;
-
           if (this.timerSeconds <= 5) {
-            box.className = "w-11 h-11 rounded-full bg-red-950/80 border-2 border-red-500 flex items-center justify-center font-black text-red-400 text-lg animate-danger-pulse shadow-[0_0_20px_rgba(239,68,68,0.6)]";
+            box.className = "w-12 h-12 rounded-full bg-red-950 border-4 border-red-500 flex items-center justify-center text-red-500 text-2xl animate-danger shadow-[0_0_15px_rgba(239,68,68,0.5)] font-magic";
             this.sound.playTick();
           }
-
           if (this.timerSeconds <= 0) {
             clearInterval(this.timerInterval);
             this.handleTimeout();
@@ -836,7 +894,8 @@
       handleTimeout() {
         if (this.hasAnswered) return;
         this.hasAnswered = true;
-        this.sound.playSpellWrong();
+        this.sound.playCauldronDrop();
+        this.updateJokerUI(); // Bloque le joker
         this.revealAnswers(null, false, true);
       }
 
@@ -844,32 +903,24 @@
         if (this.hasAnswered) return;
         this.hasAnswered = true;
         clearInterval(this.timerInterval);
+        
+        this.updateJokerUI(); // Bloque le joker
 
         if (isCorrect) {
-          this.sound.playSpellCorrect();
+          this.sound.playMagicSparkle();
           if (typeof confetti === 'function') {
-            confetti({
-              particleCount: 50,
-              spread: 60,
-              colors: ['#d4af37', '#ffffff', '#fbbf24'],
-              origin: { y: 0.7 }
-            });
+            confetti({ particleCount: 70, spread: 70, colors: ['#d4af37', '#7f0909', '#1a472a', '#ffffff'], origin: { y: 0.65 }});
           }
-
           if (this.gameMode === 'solo') {
             this.soloScore++;
             document.getElementById('soloScore').innerText = this.soloScore;
           } else {
-            if (this.currentTurn === 'teamA') {
-              this.teamAScore++;
-            } else {
-              this.teamBScore++;
-            }
+            if (this.currentTurn === 'teamA') this.teamAScore++;
+            else this.teamBScore++;
           }
         } else {
-          this.sound.playSpellWrong();
+          this.sound.playCauldronDrop();
         }
-
         this.revealAnswers(clickedBtn, isCorrect, false);
       }
 
@@ -880,47 +931,60 @@
 
         buttons.forEach(btn => {
           btn.disabled = true;
-          const text = btn.querySelector('.font-semibold').innerText;
+          const text = btn.querySelector('.text-option').innerText;
           const icon = btn.querySelector('.option-icon');
 
           if (text === correctText) {
-            btn.className = "w-full p-4 rounded-xl bg-emerald-900/60 border-2 border-emerald-500 text-left flex items-center justify-between";
-            icon.innerHTML = `<span class="text-emerald-400 font-black text-xl">✓</span>`;
+            btn.className = "w-full p-4 md:p-5 rounded-xl bg-green-900/50 border-2 border-green-500 text-left flex items-center justify-between shadow-[0_0_15px_rgba(34,197,94,0.3)] transform scale-[1.02] transition-transform";
+            icon.innerHTML = `<span class="text-green-400 font-bold text-3xl">✓</span>`;
             icon.classList.remove('opacity-0');
           } else if (btn === clickedBtn && !isCorrect) {
-            btn.className = "w-full p-4 rounded-xl bg-red-900/60 border-2 border-red-500 text-left flex items-center justify-between";
-            icon.innerHTML = `<span class="text-red-400 font-black text-xl">✕</span>`;
+            btn.className = "w-full p-4 md:p-5 rounded-xl bg-red-900/50 border-2 border-red-600 text-left flex items-center justify-between shadow-[0_0_15px_rgba(220,38,38,0.3)]";
+            icon.innerHTML = `<span class="text-red-400 font-bold text-3xl">✕</span>`;
             icon.classList.remove('opacity-0');
           } else {
-            btn.className = "w-full p-4 rounded-xl bg-slate-900/40 border-2 border-slate-700 text-left opacity-30 flex items-center justify-between";
+            if (btn.style.opacity !== '0') { // Si non masqué par le Joker
+              btn.className = "w-full p-4 md:p-5 rounded-xl bg-slate-950 border-2 border-slate-800 text-left opacity-30 flex items-center justify-between grayscale";
+            }
           }
         });
 
         const feedbackContainer = document.getElementById('feedbackContainer');
         const feedbackTitle = document.getElementById('feedbackTitle');
         const feedbackExplanation = document.getElementById('feedbackExplanation');
+        const feedbackMedia = document.getElementById('feedbackMedia');
 
         feedbackContainer.classList.remove('hidden');
+        feedbackMedia.innerHTML = ''; 
 
         if (isTimeout) {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border-l-4 border-amber-500 bg-amber-950/30 text-left space-y-2";
-          feedbackTitle.innerText = "⏳ LE SABLIER EST VIDE !";
-          feedbackTitle.className = "font-magic font-bold text-xl text-amber-400 uppercase";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border-2 border-orange-500 bg-orange-900/50 text-center space-y-3";
+          feedbackTitle.innerText = "⏳ SABLIER ÉCOULÉ !";
+          feedbackTitle.className = "font-magic text-3xl text-orange-400 drop-shadow-sm";
         } else if (isCorrect) {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border-l-4 border-emerald-500 bg-emerald-950/30 text-left space-y-2";
-          feedbackTitle.innerText = "⭐ POINT POUR VOTRE MAISON !";
-          feedbackTitle.className = "font-magic font-bold text-xl text-emerald-400 uppercase";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border-2 border-green-500 bg-green-900/50 text-center space-y-3";
+          feedbackTitle.innerText = "✨ EXCELLENT !";
+          feedbackTitle.className = "font-magic text-3xl text-green-400 drop-shadow-sm";
         } else {
-          feedbackContainer.className = "mt-6 p-4 rounded-xl border-l-4 border-red-500 bg-red-950/30 text-left space-y-2";
-          feedbackTitle.innerText = "❌ SORTILÈGE RATÉ !";
-          feedbackTitle.className = "font-magic font-bold text-xl text-red-400 uppercase";
+          feedbackContainer.className = "mt-8 p-5 rounded-xl border-2 border-red-500 bg-red-900/50 text-center space-y-3";
+          feedbackTitle.innerText = "💥 SORTILÈGE RATÉ !";
+          feedbackTitle.className = "font-magic text-3xl text-red-400 drop-shadow-sm";
         }
 
-        feedbackExplanation.innerText = q.explanation || "Bravo pour l'effort magique !";
-        
-        if (this.gameMode === 'duel') {
-          this.updateDuelHeader();
+        if (q.mediaUrl) {
+          feedbackMedia.classList.remove('hidden');
+          const ytMatch = q.mediaUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+          if (ytMatch && ytMatch[1]) {
+            feedbackMedia.innerHTML = `<iframe class="w-full max-w-md h-48 md:h-64 mx-auto" src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&mute=0" allowfullscreen></iframe>`;
+          } else {
+            feedbackMedia.innerHTML = `<img src="${q.mediaUrl}" class="max-h-48 md:max-h-64 mx-auto object-contain">`;
+          }
+        } else {
+          feedbackMedia.classList.add('hidden');
         }
+
+        feedbackExplanation.innerText = q.explanation || "Une leçon importante à retenir pour vos BUSE !";
+        if (this.gameMode === 'duel') this.updateDuelHeader();
       }
 
       nextQuestion() {
@@ -938,21 +1002,15 @@
 
       showResults() {
         this.showScreen('results');
-
         if (typeof confetti === 'function') {
-          confetti({
-            particleCount: 150,
-            spread: 100,
-            colors: ['#d4af37', '#ffffff', '#7f0909', '#0d6217'],
-            origin: { y: 0.4 }
-          });
+          confetti({ particleCount: 150, spread: 90, colors: ['#d4af37', '#7f0909', '#1a472a', '#ffffff'], origin: { y: 0.3 }});
         }
 
         const mottos = [
-          "Faites opérer la magie sur vos ventes aujourd'hui !",
-          "10 points pour le LEGO Store !",
-          "N'oubliez pas : c'est la boîte qui choisit son constructeur.",
-          "Je jure solennellement que nos ventes seront fantastiques !"
+          "« Ce sont nos choix qui montrent ce que nous sommes vraiment... » Bonnes ventes !",
+          "« On peut trouver le bonheur même dans les heures les plus sombres... »",
+          "« N'aie pas pitié des morts. Aie pitié des vivants... » Et des clients difficiles !",
+          "10 points pour votre équipe ! Excellente journée au magasin."
         ];
         document.getElementById('dailyMotto').innerText = mottos[Math.floor(Math.random() * mottos.length)];
 
@@ -962,27 +1020,17 @@
 
           const finalScore = this.soloScore;
           const total = this.activeQuestions.length;
-          document.getElementById('finalScoreVal').innerText = `${finalScore} / ${total}`;
+          document.getElementById('finalScoreVal').innerText = `${finalScore}/${total}`;
 
-          let rank = "";
-          let icon = "🏆";
+          let rank = "", icon = "🏆";
           const ratio = finalScore / total;
 
-          if (ratio === 1) {
-            rank = "Ordre de Merlin, Première Classe";
-            icon = "🦅";
-          } else if (ratio >= 0.75) {
-            rank = "Préfet-en-Chef";
-            icon = "✨";
-          } else if (ratio >= 0.5) {
-            rank = "Élève de B.U.S.E";
-            icon = "🦉";
-          } else {
-            rank = "Troll des Montagnes (À réviser !)";
-            icon = "🧌";
-          }
+          if (ratio === 1) { rank = "Directeur de Poudlard"; icon = "👑"; }
+          else if (ratio >= 0.75) { rank = "Auror"; icon = "⚡"; }
+          else if (ratio >= 0.5) { rank = "Préfet"; icon = "📜"; }
+          else { rank = "Troll des montagnes"; icon = "🧌"; }
 
-          document.getElementById('rankTitleBadge').innerText = `RANG : ${rank}`;
+          document.getElementById('rankTitleBadge').innerText = `Titre : ${rank}`;
           document.getElementById('resultTrophyIcon').innerText = icon;
           
           this.saveScoreToLocal({ mode: 'solo', name: this.playerName, score: finalScore, total: total, rank: rank });
@@ -998,15 +1046,15 @@
           const duelWinnerText = document.getElementById('duelWinnerText');
           let winner = "";
           if (this.teamAScore > this.teamBScore) {
-            duelWinnerText.innerHTML = `✨ LA COUPE REVIENT À : <span class='text-red-500'>${this.teamAName}</span> !`;
+            duelWinnerText.innerHTML = `🦁 LA MAISON <span class='text-amber-300'>${this.teamAName.toUpperCase()}</span> REMPORTE LA COUPE !`;
             document.getElementById('resultTrophyIcon').innerText = "🦁";
             winner = this.teamAName;
           } else if (this.teamBScore > this.teamAScore) {
-            duelWinnerText.innerHTML = `🐍 LA COUPE REVIENT À : <span class='text-green-500'>${this.teamBName}</span> !`;
+            duelWinnerText.innerHTML = `🐍 LA MAISON <span class='text-slate-300'>${this.teamBName.toUpperCase()}</span> REMPORTE LA COUPE !`;
             document.getElementById('resultTrophyIcon').innerText = "🐍";
             winner = this.teamBName;
           } else {
-            duelWinnerText.innerHTML = "🤝 ÉGALITÉ PARFAITE !";
+            duelWinnerText.innerHTML = "🤝 ÉGALITÉ PARFAITE ! DUMBLEDORE EST RAVI.";
             document.getElementById('resultTrophyIcon').innerText = "⚖️";
             winner = "Égalité";
           }
@@ -1020,7 +1068,6 @@
         }
       }
 
-      // CLÉ HARRY POTTER POUR SAUVEGARDER LES SCORES SÉPARÉMENT
       saveScoreToLocal(data) {
         data.date = new Date().toISOString();
         let scores = JSON.parse(localStorage.getItem('legoHarryPotterQuizScores')) || [];
@@ -1037,11 +1084,11 @@
         const tabSolo = document.getElementById('tabSolo');
         const tabDuel = document.getElementById('tabDuel');
         if (filterMode === 'solo') {
-          tabSolo.className = "text-yellow-500 border-b-2 border-yellow-500 px-4 py-2 transition";
-          tabDuel.className = "text-slate-500 hover:text-slate-300 px-4 py-2 transition";
+          tabSolo.className = "text-amber-400 border-b-2 border-amber-500 px-4 py-2 transition-colors";
+          tabDuel.className = "text-slate-500 hover:text-slate-300 px-4 py-2 transition-colors";
         } else {
-          tabDuel.className = "text-yellow-500 border-b-2 border-yellow-500 px-4 py-2 transition";
-          tabSolo.className = "text-slate-500 hover:text-slate-300 px-4 py-2 transition";
+          tabDuel.className = "text-amber-400 border-b-2 border-amber-500 px-4 py-2 transition-colors";
+          tabSolo.className = "text-slate-500 hover:text-slate-300 px-4 py-2 transition-colors";
         }
         
         const listContainer = document.getElementById('leaderboardList');
@@ -1051,59 +1098,55 @@
         let filteredScores = scores.filter(s => s.mode === filterMode);
         
         if (filteredScores.length === 0) {
-          listContainer.innerHTML = `<div class="text-center py-10 text-slate-500 italic text-sm">Le registre de Poudlard est vide. Jouez une partie !</div>`;
+          listContainer.innerHTML = `<div class="text-center py-12 text-slate-500 font-magic text-xl">La salle des trophées est vide.</div>`;
           return;
         }
         
         if (filterMode === 'solo') {
           filteredScores.sort((a, b) => {
-            const ratioA = a.score / a.total;
-            const ratioB = b.score / b.total;
-            if (ratioB !== ratioA) return ratioB - ratioA;
+            const rA = a.score / a.total, rB = b.score / b.total;
+            if (rB !== rA) return rB - rA;
             return new Date(b.date) - new Date(a.date);
           });
           
           filteredScores.forEach((s, idx) => {
             const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
-            const ratio = Math.round((s.score / s.total) * 100);
             listContainer.innerHTML += `
-              <div class="flex items-center justify-between p-4 rounded-xl bg-slate-900/60 border border-slate-700/80 hover:bg-slate-800/80 transition shadow-sm">
+              <div class="flex items-center justify-between p-4 bg-slate-900 border border-slate-700 rounded-lg shadow-sm">
                 <div class="flex items-center gap-4">
-                  <div class="w-8 text-center text-xl font-bold font-magic ${idx === 0 ? 'text-yellow-500 text-3xl' : (idx === 1 ? 'text-slate-300 text-2xl' : (idx === 2 ? 'text-yellow-700 text-2xl' : 'text-slate-500'))}">
+                  <div class="w-10 text-center font-magic ${idx === 0 ? 'text-amber-500 text-4xl' : 'text-slate-400 text-3xl'}">
                     #${idx + 1}
                   </div>
                   <div>
-                    <div class="font-black font-magic text-white tracking-wider text-lg uppercase">${s.name}</div>
-                    <div class="text-[11px] text-slate-400">${date} - <span class="italic text-slate-300 font-semibold">${s.rank}</span></div>
+                    <div class="font-magic text-amber-100 text-xl tracking-wider uppercase">${s.name}</div>
+                    <div class="text-xs text-slate-400 font-inter font-bold">${date} - <span class="text-purple-400">${s.rank}</span></div>
                   </div>
                 </div>
                 <div class="text-right">
-                  <div class="font-bold text-yellow-500 font-magic text-2xl">${s.score} <span class="text-sm text-slate-500">/ ${s.total}</span></div>
-                  <div class="text-[10px] uppercase font-bold text-slate-500">${ratio}% de réussite</div>
+                  <div class="font-magic text-amber-500 text-3xl leading-none">${s.score} <span class="text-lg text-slate-500">/${s.total}</span></div>
                 </div>
               </div>
             `;
           });
         } else {
           filteredScores.sort((a, b) => new Date(b.date) - new Date(a.date));
-          
           filteredScores.forEach((s, idx) => {
             const date = new Date(s.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
             listContainer.innerHTML += `
-              <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-700/80 space-y-3 shadow-sm">
-                <div class="flex justify-between items-center text-xs text-slate-400">
-                  <span class="font-bold">Match du ${date}</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-600 font-semibold ${s.winner === 'Égalité' ? 'text-slate-300' : 'text-yellow-500'} uppercase font-magic">Vainqueur : ${s.winner}</span>
+              <div class="p-5 bg-slate-900 border border-slate-700 rounded-lg space-y-4 shadow-sm">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-bold border-b border-slate-700 pb-2 font-inter">
+                  <span>Duel du : ${date}</span>
+                  <span class="px-2.5 py-1 ${s.winner === 'Égalité' ? 'bg-slate-700' : 'bg-amber-900 text-amber-200'} uppercase font-magic tracking-wide rounded">Vainqueur: ${s.winner}</span>
                 </div>
-                <div class="flex items-stretch justify-between gap-3">
-                  <div class="flex-1 text-center bg-red-950/30 rounded-lg py-2 border-b-2 border-red-700 flex flex-col justify-center">
-                    <span class="block text-xs font-black uppercase text-red-500 truncate px-1 font-magic" title="${s.teamA}">${s.teamA}</span>
-                    <span class="text-2xl font-bold font-magic text-white">${s.scoreA} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+                <div class="flex items-stretch justify-between gap-4">
+                  <div class="flex-1 text-center bg-gryffindor rounded p-3 flex flex-col justify-center">
+                    <span class="block text-sm font-magic uppercase truncate" title="${s.teamA}">${s.teamA}</span>
+                    <span class="text-4xl font-magic leading-none mt-1">${s.scoreA} <span class="text-xl opacity-50">/${s.total}</span></span>
                   </div>
-                  <div class="flex items-center px-1 font-black text-slate-600 text-lg italic font-magic">VS</div>
-                  <div class="flex-1 text-center bg-green-950/30 rounded-lg py-2 border-b-2 border-green-700 flex flex-col justify-center">
-                    <span class="block text-xs font-black uppercase text-green-500 truncate px-1 font-magic" title="${s.teamB}">${s.teamB}</span>
-                    <span class="text-2xl font-bold font-magic text-white">${s.scoreB} <span class="text-xs text-slate-500">/ ${s.total}</span></span>
+                  <div class="flex items-center px-2 font-magic text-slate-500 text-2xl">VS</div>
+                  <div class="flex-1 text-center bg-slytherin rounded p-3 flex flex-col justify-center">
+                    <span class="block text-sm font-magic uppercase truncate" title="${s.teamB}">${s.teamB}</span>
+                    <span class="text-4xl font-magic leading-none mt-1">${s.scoreB} <span class="text-xl opacity-50">/${s.total}</span></span>
                   </div>
                 </div>
               </div>
@@ -1113,16 +1156,13 @@
       }
       
       clearLeaderboard() {
-        if (confirm("Sortilège d'Amnésie (Oubliettes) : Voulez-vous vraiment effacer l'historique magique ?")) {
+        if (confirm("Lancer Oubliettes sur l'historique des trophées ?")) {
           localStorage.removeItem('legoHarryPotterQuizScores');
           this.renderLeaderboardList('solo');
         }
       }
 
-      openCustomModal() {
-        document.getElementById('customModal').classList.remove('hidden');
-      }
-
+      openCustomModal() { document.getElementById('customModal').classList.remove('hidden'); }
       closeCustomModal() {
         document.getElementById('customModal').classList.add('hidden');
         document.getElementById('addQuestionForm').reset();
@@ -1135,35 +1175,26 @@
         const wrong1 = document.getElementById('custQWrong1').value.trim();
         const wrong2 = document.getElementById('custQWrong2').value.trim();
         const wrong3 = document.getElementById('custQWrong3').value.trim();
-        const expl = document.getElementById('custQExpl').value.trim() || "Magie exclusive du magasin !";
+        const expl = document.getElementById('custQExpl').value.trim() || "Information issue de la bibliothèque de Poudlard.";
+        const media = document.getElementById('custQMedia').value.trim();
 
         if (!text || !correct || !wrong1) return;
 
         this.questionsPool.unshift({
           question: text,
-          options: [correct, wrong1, wrong2 || "Moldus", wrong3 || "Voldemort"],
-          correct: 0,
-          category: "Sortilège Inconnu",
-          explanation: expl
+          options: [correct, wrong1, wrong2 || "Drago Malefoy", wrong3 || "Le Nimbus 2000"],
+          correct: 0, category: "Magasin", explanation: expl, mediaUrl: media 
         });
 
         this.initUI();
         this.closeCustomModal();
-        this.sound.playSpellCorrect();
+        this.sound.playMagicSparkle();
       }
     }
 
-    const initApp = () => {
-      if (!window.app) {
-        window.app = new QuizApp();
-      }
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initApp);
-    } else {
-      initApp();
-    }
+    const initApp = () => { if (!window.app) window.app = new QuizApp(); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
+    else initApp();
   </script>
 </body>
 </html>
